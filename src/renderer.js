@@ -7,6 +7,7 @@ const Canvas = require('./canvas');
 class Renderer {
   static SNAKE_COLOR = '#8AFFA5';
   static GRID_COLOR = '#888';
+  static GOAL_COLOR = '#8AC2FF';
 
   constructor({parent, grid, width, height}) {
     this.parent = parent;
@@ -39,42 +40,64 @@ class Renderer {
     const tileWidth = width / cols;
     const tileHeight = height / rows;
 
-    for (let row = 0; row <= rows; row++) {
-      this.canvas.drawLine({ 
-        x1: 0,
-        y1: row * tileHeight,
-        x2: width,
-        y2: row * tileHeight,
-        lineWidth: 0.5,
-        strokeStyle: Renderer.GRID_COLOR,
-      });
-    }
+    this.renderGrid({rows, cols, width, height, tileWidth, tileHeight});
 
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const tile = tiles[row][col];
+
+        const rect = {
+          x: col * tileWidth,
+          y: row * tileHeight,
+          width: tileWidth,
+          height: tileHeight,
+          lineWidth: 0,
+        };
+
+        if (Grid.isSnakeTile(tile)) {
+          this.canvas.drawRect({
+            ...rect,
+            fillStyle: Renderer.SNAKE_COLOR,
+          });
+        }
+        else if (Grid.isGoalTile(tile)) {
+          this.canvas.drawRect({
+            ...rect,
+            fillStyle: Renderer.GOAL_COLOR,
+          });
+        }
+      }
+    }
+  }
+
+  renderGrid({rows, cols, width, height, tileWidth, tileHeight}) {
+    this.renderVerticalGrid({rows, width, tileHeight});
+    this.renderHorizontalGrid({cols, height, tileWidth});
+  }
+
+  renderHorizontalGrid({cols, height, tileWidth}) {
     for (let col = 0; col <= cols; col++) {
       this.canvas.drawLine({ 
         x1: col * tileWidth,
         y1: 0,
         x2: col * tileWidth,
         y2: height,
-        lineWidth: 0.5,
+        lineWidth: 1,
         strokeStyle: Renderer.GRID_COLOR,
       });
     }
+  }
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const isSnake = Grid.isSnakeTile(tiles[row][col]);
-        if (isSnake) {
-          this.canvas.drawRect({
-            x: col * tileWidth,
-            y: row * tileHeight,
-            width: tileWidth,
-            height: tileHeight,
-            fillStyle: Renderer.SNAKE_COLOR,
-            lineWidth: 0,
-          });
-        }
-      }
+  renderVerticalGrid({rows, width, tileHeight}) {
+    for (let row = 0; row <= rows; row++) {
+      this.canvas.drawLine({ 
+        x1: 0,
+        y1: row * tileHeight,
+        x2: width,
+        y2: row * tileHeight,
+        lineWidth: 1,
+        strokeStyle: Renderer.GRID_COLOR,
+      });
     }
   }
 }
