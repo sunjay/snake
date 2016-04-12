@@ -6,3 +6,6 @@ class Direction {
   static E = new Vector({x: 1, y: 0});
   static W = new Vector({x: -1, y: 0});
 }
+
+module.exports = Direction;
+

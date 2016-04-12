@@ -10,15 +10,37 @@ class Grid {
     this.rows = rows;
     this.cols = cols;
 
-    this.snake = new Snake([
-      new Vector({x: 0, y: 0}),
-      new Vector({x: 1, y: 0}),
-      new Vector({x: 2, y: 0}),
-    ]);
-    this.goal = new Vector({
+    this.snake = new Snake();
+    this.goal = this.generateGoal();
+  }
+
+  generateGoal() {
+    if (this.snake.size >= this.rows * this.cols) {
+      return new Vector({x: -1, y: -1});
+    }
+
+    let goal;
+    do {
+      goal = this.randomGoal();
+    } while (this.snake.contains(goal));
+
+    return goal;
+  }
+
+  randomGoal() {
+    return new Vector({
       x: Math.floor(Math.random() * (this.cols + 1)),
       y: Math.floor(Math.random() * (this.rows + 1)),
     });
+  }
+
+  update() {
+    this.snake.shift();
+
+    if (this.snake.head().equals(this.goal)) {
+      this.snake.append();
+      this.goal = this.generateGoal();
+    }
   }
 
   render() {

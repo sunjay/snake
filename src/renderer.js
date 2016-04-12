@@ -6,7 +6,7 @@ const Canvas = require('./canvas');
  */
 class Renderer {
   static SNAKE_COLOR = '#8AFFA5';
-  static GRID_COLOR = '#888';
+  static GRID_COLOR = '#DDD';
   static GOAL_COLOR = '#8AC2FF';
 
   constructor({parent, grid, width, height}) {
@@ -40,8 +40,6 @@ class Renderer {
     const tileWidth = width / cols;
     const tileHeight = height / rows;
 
-    this.renderGrid({rows, cols, width, height, tileWidth, tileHeight});
-
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const tile = tiles[row][col];
@@ -68,6 +66,8 @@ class Renderer {
         }
       }
     }
+
+    this.renderGrid({rows, cols, width, height, tileWidth, tileHeight});
   }
 
   renderGrid({rows, cols, width, height, tileWidth, tileHeight}) {

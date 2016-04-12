@@ -12,6 +12,7 @@ const renderer = new Renderer({
 });
 
 function loop() {
+  grid.update();
   renderer.render();
 
   window.requestAnimationFrame(loop);
