@@ -13,6 +13,10 @@ class Snake {
     this.direction = Direction.E;
   }
 
+  setDirection(direction) {
+    this.direction = direction;
+  }
+
   get size() {
     return this.body.length;
   }
