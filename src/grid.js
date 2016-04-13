@@ -48,10 +48,7 @@ class Grid {
       return;
     }
 
-    this.snake.shift();
-
     const head = this.snake.head();
-
     if (head.equals(this.goal)) {
       this.snake.append();
       this.goal = this.generateGoal();
@@ -62,6 +59,8 @@ class Grid {
     else if (head.x < 0 || head.y < 0 || head.x >= this.cols || head.y >= this.rows) {
       throw new GameLost('out of bounds');
     }
+
+    this.snake.shift();
   }
 
   render() {
