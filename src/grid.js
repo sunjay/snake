@@ -32,8 +32,8 @@ class Grid {
 
   randomGoal() {
     return new Vector({
-      x: Math.floor(Math.random() * (this.cols + 1)),
-      y: Math.floor(Math.random() * (this.rows + 1)),
+      x: Math.floor(Math.random() * this.cols),
+      y: Math.floor(Math.random() * this.rows),
     });
   }
 
