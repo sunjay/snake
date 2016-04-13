@@ -2,6 +2,8 @@ const Vector = require('./vector');
 const Snake = require('./snake');
 const FrameRate = require('./fps');
 
+const {GameLost} = require('./exceptions');
+
 class Grid {
   static EMPTY = 0;
   static SNAKE = 1;
@@ -17,8 +19,12 @@ class Grid {
     this.goal = this.generateGoal();
   }
 
+  get isFull() {
+    return this.snake.size >= this.rows * this.cols;
+  }
+
   generateGoal() {
-    if (this.snake.size >= this.rows * this.cols) {
+    if (this.isFull) {
       return new Vector({x: -1, y: -1});
     }
 
@@ -44,9 +50,17 @@ class Grid {
 
     this.snake.shift();
 
-    if (this.snake.head().equals(this.goal)) {
+    const head = this.snake.head();
+
+    if (head.equals(this.goal)) {
       this.snake.append();
       this.goal = this.generateGoal();
+    }
+    else if (this.snake.isWithinSelf()) {
+      throw new GameLost('bumped into yourself');
+    }
+    else if (head.x < 0 || head.y < 0 || head.x >= this.cols || head.y >= this.rows) {
+      throw new GameLost('out of bounds');
     }
   }
 

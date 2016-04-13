@@ -40,6 +40,11 @@ class Snake {
     return this.body.some((b) => b.equals(vec));
   }
 
+  isWithinSelf() {
+    const head = this.head();
+    return this.body.slice(1).some((b) => b.equals(head));
+  }
+
   head() {
     return this.body[0];
   }
