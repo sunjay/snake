@@ -1,5 +1,6 @@
 const Vector = require('./vector');
 const Snake = require('./snake');
+const FrameRate = require('./fps');
 
 class Grid {
   static EMPTY = 0;
@@ -9,6 +10,8 @@ class Grid {
   constructor({rows, cols}) {
     this.rows = rows;
     this.cols = cols;
+
+    this.fps = new FrameRate(10);
 
     this.snake = new Snake();
     this.goal = this.generateGoal();
@@ -35,6 +38,10 @@ class Grid {
   }
 
   update() {
+    if (!this.fps.shouldUpdate()) {
+      return;
+    }
+
     this.snake.shift();
 
     if (this.snake.head().equals(this.goal)) {
