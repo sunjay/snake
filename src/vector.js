@@ -14,6 +14,10 @@ class Vector {
       y: this.y + y,
     });
   }
+
+  dot({x, y}) {
+    return this.x * x + this.y * y;
+  }
 }
 
 module.exports = Vector;

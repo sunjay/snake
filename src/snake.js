@@ -17,6 +17,10 @@ class Snake {
     this.direction = direction;
   }
 
+  canTravelInDirection(direction) {
+    return !Direction.isOpposite(direction, this.direction);
+  }
+
   get size() {
     return this.body.length;
   }
