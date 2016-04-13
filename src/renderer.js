@@ -8,6 +8,7 @@ class Renderer {
   static SNAKE_COLOR = '#8AFFA5';
   static GRID_COLOR = '#DDD';
   static GOAL_COLOR = '#8AC2FF';
+  static BORDER_COLOR = '#444';
 
   constructor({parent, grid, width, height}) {
     this.parent = parent;
@@ -68,6 +69,7 @@ class Renderer {
     }
 
     this.renderGrid({rows, cols, width, height, tileWidth, tileHeight});
+    this.renderBorder({width, height});
   }
 
   renderGrid({rows, cols, width, height, tileWidth, tileHeight}) {
@@ -99,6 +101,38 @@ class Renderer {
         strokeStyle: Renderer.GRID_COLOR,
       });
     }
+  }
+
+  renderBorder({width, height}) {
+    const styles = {lineWidth: 1, strokeStyle: Renderer.BORDER_COLOR};
+    this.canvas.drawLine({
+      x1: 0,
+      y1: 0,
+      x2: width,
+      y2: 0,
+      ...styles,
+    });
+    this.canvas.drawLine({
+      x1: 0,
+      y1: height,
+      x2: width,
+      y2: height,
+      ...styles,
+    });
+    this.canvas.drawLine({
+      x1: 0,
+      y1: 0,
+      x2: 0,
+      y2: height,
+      ...styles,
+    });
+    this.canvas.drawLine({
+      x1: width,
+      y1: 0,
+      x2: width,
+      y2: height,
+      ...styles,
+    });
   }
 }
 
