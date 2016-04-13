@@ -25,7 +25,7 @@ class Grid {
 
   generateGoal() {
     if (this.isFull) {
-      return new Vector({x: -1, y: -1});
+      return null;
     }
 
     let goal;
@@ -43,6 +43,10 @@ class Grid {
     });
   }
 
+  outOfBounds({x, y}) {
+    return x < 0 || y < 0 || x >= this.cols || y >= this.rows;
+  }
+
   update() {
     if (!this.fps.shouldUpdate()) {
       return;
@@ -56,7 +60,7 @@ class Grid {
     else if (this.snake.isWithinSelf()) {
       throw new GameLost('bumped into yourself');
     }
-    else if (head.x < 0 || head.y < 0 || head.x >= this.cols || head.y >= this.rows) {
+    else if (this.outOfBounds(head)) {
       throw new GameLost('out of bounds');
     }
 
@@ -68,9 +72,15 @@ class Grid {
       Array.from(Array(this.cols)).map(() => Grid.EMPTY)
     ));
 
-    tiles[this.goal.y][this.goal.x] = Grid.GOAL;
+    if (this.goal) {
+      tiles[this.goal.y][this.goal.x] = Grid.GOAL;
+    }
 
     for (let {x, y} of this.snake.body) {
+      if (this.outOfBounds({x, y})) {
+        continue;
+      }
+
       tiles[y][x] = Grid.SNAKE;
     }
 
