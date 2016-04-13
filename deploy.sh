@@ -29,5 +29,7 @@ git push origin `git subtree split --prefix dist gh-pages`:gh-pages --force
 # Return to previous branch
 git checkout -
 
+git branch -D gh-pages
+
 echo -e "\e[32mSuccess!"
 
