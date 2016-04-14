@@ -3,6 +3,7 @@ const Grid = require('./grid');
 const Renderer = require('./renderer');
 
 const container = document.getElementById('game-container');
+const snakeLength = document.getElementById('snake-length');
 
 let grid, renderer;
 reset();
@@ -28,6 +29,8 @@ function loop() {
 
   grid.update();
   renderer.render();
+
+  snakeLength.textContent = `Length: ${grid.snake.size}`;
 }
 
 document.addEventListener('keydown', () => {
