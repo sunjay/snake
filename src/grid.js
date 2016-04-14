@@ -9,14 +9,18 @@ class Grid {
   static SNAKE = 1;
   static GOAL = 2;
 
+  // Append this many body parts per food collected
+  static APPENDS_PER_FOOD = 5;
+
   constructor({rows, cols}) {
     this.rows = rows;
     this.cols = cols;
 
-    this.fps = new FrameRate(10);
+    this.fps = new FrameRate(15);
 
     this.snake = new Snake();
     this.goal = this.generateGoal();
+    this.leftoverAppends = 0;
   }
 
   get isFull() {
@@ -54,7 +58,7 @@ class Grid {
 
     const head = this.snake.head();
     if (head.equals(this.goal)) {
-      this.snake.append();
+      this.leftoverAppends += Grid.APPENDS_PER_FOOD;
       this.goal = this.generateGoal();
     }
     else if (this.snake.isWithinSelf()) {
@@ -65,6 +69,11 @@ class Grid {
     }
 
     this.snake.shift();
+
+    if (this.leftoverAppends > 0) {
+      this.snake.append();
+      this.leftoverAppends -= 1;
+    }
   }
 
   render() {
