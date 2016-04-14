@@ -2,6 +2,11 @@ const Direction = require('./direction');
 const Grid = require('./grid');
 const Renderer = require('./renderer');
 
+const {app} = require('../scss/index.scss');
+
+const appContainer = document.getElementById('app');
+appContainer.classList.add(app);
+
 const container = document.getElementById('game-container');
 const snakeLength = document.getElementById('snake-length');
 

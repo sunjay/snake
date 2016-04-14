@@ -1,5 +1,14 @@
-:local(.index) {
-  h1 {
-    color: #0099FF;
-  }
+:local(.app) {
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+:global(.pull-left) {
+  float: left;
+}
+
+:global(.pull-right) {
+  float: right;
+}
+
