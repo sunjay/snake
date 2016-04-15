@@ -10,9 +10,9 @@ class Renderer {
   static GOAL_COLOR = '#8AC2FF';
   static BORDER_COLOR = '#444';
 
-  constructor({parent, grid, width, height}) {
+  constructor({parent, game, width, height}) {
     this.parent = parent;
-    this.grid = grid;
+    this.game = game;
 
     const canvasElement = this._createCanvas({width, height});
     this.canvas = new Canvas(canvasElement);
@@ -30,14 +30,20 @@ class Renderer {
   render() {
     this.canvas.clear();
 
-    const tiles = this.grid.render();
+    const {state, grid} = this.game.render();
 
     const width = this.canvas.width;
     const height = this.canvas.height;
 
-    const rows = this.grid.rows;
-    const cols = this.grid.cols;
+    this.renderGrid({grid, width, height});
 
+    this.renderState({state, width, height});
+  }
+
+  renderState({state, width, height}) {
+  }
+
+  renderGrid({grid: {rows, cols, tiles}, width, height}) {
     const tileWidth = width / cols;
     const tileHeight = height / rows;
 
@@ -68,11 +74,11 @@ class Renderer {
       }
     }
 
-    this.renderGrid({rows, cols, width, height, tileWidth, tileHeight});
+    this.renderGridBackground({rows, cols, width, height, tileWidth, tileHeight});
     this.renderBorder({width, height});
   }
 
-  renderGrid({rows, cols, width, height, tileWidth, tileHeight}) {
+  renderGridBackground({rows, cols, width, height, tileWidth, tileHeight}) {
     this.renderVerticalGrid({rows, width, tileHeight});
     this.renderHorizontalGrid({cols, height, tileWidth});
   }

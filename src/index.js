@@ -1,5 +1,5 @@
-const Direction = require('./direction');
 const Grid = require('./grid');
+const Game = require('./game');
 const Renderer = require('./renderer');
 
 const {app} = require('../scss/index.scss');
@@ -10,7 +10,7 @@ appContainer.classList.add(app);
 const container = document.getElementById('game-container');
 const snakeLength = document.getElementById('snake-length');
 
-let grid, renderer;
+let game, renderer;
 reset();
 loop();
 
@@ -19,11 +19,12 @@ function reset() {
     container.removeChild(container.firstChild);
   }
 
-  grid = new Grid({rows: 30, cols: 30});
+  const grid = new Grid({rows: 30, cols: 30});
+  game = new Game(grid);
 
   renderer = new Renderer({
     parent: container,
-    grid: grid,
+    game: game,
     width: 600, // px
     height: 600, // px
   });
@@ -32,31 +33,15 @@ function reset() {
 function loop() {
   window.requestAnimationFrame(loop);
 
-  grid.update();
+  game.update();
   renderer.render();
 
-  snakeLength.textContent = `Length: ${grid.snake.size}`;
+  snakeLength.textContent = `Length: ${game.snakeSize}`;
 }
 
-document.addEventListener('keydown', () => {
-  const key = event.width || event.keyCode;
-  let direction = null;
-  if (key === 38) { // UP
-    direction = Direction.N;
-  }
-  else if (key === 39) { // RIGHT
-    direction = Direction.E;
-  }
-  else if (key === 37) { // LEFT
-    direction = Direction.W;
-  }
-  else if (key === 40) { // DOWN
-    direction = Direction.S;
-  }
-
-  if (direction && grid.snake.canTravelInDirection(direction)) {
-    grid.snake.setDirection(direction);
-  }
+document.addEventListener('keydown', (event) => {
+    const key = event.width || event.keyCode;
+    game.handleKey(key);
 });
 
 document.getElementById('reset').addEventListener('click', () => {

@@ -93,7 +93,11 @@ class Grid {
       tiles[y][x] = Grid.SNAKE;
     }
 
-    return tiles;
+    return {
+      rows: this.rows,
+      cols: this.cols,
+      tiles,
+    };
   }
 
   static isEmptyTile(tile) {
