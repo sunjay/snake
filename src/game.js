@@ -31,8 +31,10 @@ class Game {
 
   handleKey(key) {
     const isRunning = Game.isRunning(this.state);
+    const isReady = Game.isReady(this.state);
+
     if (!isRunning) {
-      if (ARROW_KEYS.has(key)) {
+      if (isReady && ARROW_KEYS.has(key)) {
         this.state = Game.GAME_RUNNING;
       }
       else {

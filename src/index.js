@@ -41,6 +41,10 @@ function loop() {
 
 document.addEventListener('keydown', (event) => {
     const key = event.width || event.keyCode;
+    if (key === 82) { // r
+      reset();
+      return;
+    }
     game.handleKey(key);
 });
 

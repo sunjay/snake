@@ -31,17 +31,17 @@ class Renderer {
   render() {
     this.canvas.clear();
 
-    const {state, grid} = this.game.render();
+    const {state, message, grid} = this.game.render();
 
     const width = this.canvas.width;
     const height = this.canvas.height;
 
     this.renderGrid({grid, width, height});
 
-    this.renderState({state, width, height});
+    this.renderState({state, message, width, height});
   }
 
-  renderState({state, width, height}) {
+  renderState({state, message, width, height}) {
     if (Game.isReady(state)) {
       this.renderTitle({
         title: 'Snake',
@@ -50,6 +50,22 @@ class Renderer {
           'Press any of the arrow keys to begin'
         ),
         titleFillStyle: '#00C210',
+        width, height,
+      });
+    }
+    else if (Game.isLost(state)) {
+      this.renderTitle({
+        title: 'You Lost',
+        subtitle: message + '\nPress r',
+        titleFillStyle: '#FF5454',
+        width, height,
+      });
+    }
+    else if (Game.isWon(state)) {
+      this.renderTitle({
+        title: 'You Won!',
+        subtitle: 'Press r',
+        titleFillStyle: '#AAFF54',
         width, height,
       });
     }
