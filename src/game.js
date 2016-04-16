@@ -1,6 +1,18 @@
 const {GameLost} = require('./exceptions');
 const Direction = require('./direction');
 
+const KEYS = {
+  UP_ARROW: 38,
+  RIGHT_ARROW: 39,
+  LEFT_ARROW: 37,
+  DOWN_ARROW: 40,
+};
+const ARROW_KEYS = new Set(
+  Object.keys(KEYS)
+    .filter((k) => k.includes('ARROW'))
+    .map((k) => KEYS[k])
+);
+
 class Game {
   static GAME_READY = 'ready';
   static GAME_RUNNING = 'running';
@@ -18,21 +30,27 @@ class Game {
   }
 
   handleKey(key) {
-    if (!Game.isRunning(this.state)) {
-      return;
+    const isRunning = Game.isRunning(this.state);
+    if (!isRunning) {
+      if (ARROW_KEYS.has(key)) {
+        this.state = Game.GAME_RUNNING;
+      }
+      else {
+        return;
+      }
     }
 
     let direction = null;
-    if (key === 38) { // UP
+    if (key === KEYS.UP_ARROW) {
       direction = Direction.N;
     }
-    else if (key === 39) { // RIGHT
+    else if (key === KEYS.RIGHT_ARROW) {
       direction = Direction.E;
     }
-    else if (key === 37) { // LEFT
+    else if (key === KEYS.LEFT_ARROW) {
       direction = Direction.W;
     }
-    else if (key === 40) { // DOWN
+    else if (key === KEYS.DOWN_ARROW) {
       direction = Direction.S;
     }
 
