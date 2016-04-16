@@ -18,7 +18,10 @@ class Grid {
 
     this.fps = new FrameRate(15);
 
-    this.snake = new Snake();
+    this.snake = new Snake({
+      startX: Math.floor(this.cols / 2),
+      startY: Math.floor(this.rows / 2),
+    });
     this.goal = this.generateGoal();
     this.leftoverAppends = 0;
   }

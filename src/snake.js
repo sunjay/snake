@@ -2,12 +2,10 @@ const Vector = require('./vector');
 const Direction = require('./direction');
 
 class Snake {
-  constructor() {
+  constructor({startX, startY}) {
     this.body = [
       // Head has to be first
-      new Vector({x: 2, y: 0}),
-      new Vector({x: 1, y: 0}),
-      new Vector({x: 0, y: 0}),
+      new Vector({x: startX, y: startY}),
     ];
     this.afterTail = null;
     this.direction = Direction.E;
@@ -28,6 +26,9 @@ class Snake {
     // That's okay with this method, since it doesn't use
     // the current direction, but instead uses a possible
     // collision to determine if the direction is okay
+    if (this.body.length < 2) {
+      return true;
+    }
     const delta = this.body[1].sub(this.head()).normalize();
     return !delta.equals(direction);
   }
