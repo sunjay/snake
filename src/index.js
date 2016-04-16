@@ -1,6 +1,7 @@
 const Grid = require('./grid');
 const Game = require('./game');
 const Renderer = require('./renderer');
+const {KEYS} = require('./keys');
 
 const {app} = require('../scss/index.scss');
 
@@ -41,7 +42,7 @@ function loop() {
 
 document.addEventListener('keydown', (event) => {
     const key = event.width || event.keyCode;
-    if (key === 82) { // r
+    if (key === KEYS.R) { // r
       reset();
       return;
     }
