@@ -9,7 +9,7 @@ class Game {
 
   constructor(grid) {
     this.grid = grid;
-    this.state = Game.GAME_RUNNING;
+    this.state = Game.GAME_READY;
     this.stateMessage = '';
   }
 

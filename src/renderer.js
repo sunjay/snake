@@ -1,3 +1,4 @@
+const Game = require('./game');
 const Grid = require('./grid');
 const Canvas = require('./canvas');
 
@@ -41,6 +42,47 @@ class Renderer {
   }
 
   renderState({state, width, height}) {
+    if (Game.isReady(state)) {
+      this.renderTitle({
+        title: 'Snake',
+        subtitle: (
+          'Collect the food and grow your tail\n' +
+          'Press any of the arrow keys to begin'
+        ),
+        titleFillStyle: '#00C210',
+        width, height,
+      });
+    }
+  }
+  
+  renderTitle({title, subtitle, titleFillStyle, width, height}) {
+    const titleSize = 70;
+    const subtitleSize = 20;
+    const lineSpacing = 10;
+
+    const titleLines = title.split('\n');
+    const subtitleLines = subtitle.split('\n');
+
+    for (let i = 0; i < titleLines.length; i++) {
+      let titleLine = titleLines[i];
+      this.canvas.drawText({
+        text: titleLine,
+        x: width / 2,
+        y: height / 2 - (titleLines.length - i - 1) * (titleSize + lineSpacing) - titleSize / 2 - lineSpacing,
+        fontSize: titleSize,
+        fillStyle: titleFillStyle,
+      });
+    }
+
+    for (let i = 0; i < subtitleLines.length; i++) {
+      let subtitleLine = subtitleLines[i];
+      this.canvas.drawText({
+        text: subtitleLine,
+        x: width / 2,
+        y: height / 2 + i * (subtitleSize + lineSpacing),
+        fontSize: subtitleSize,
+      });
+    }
   }
 
   renderGrid({grid: {rows, cols, tiles}, width, height}) {

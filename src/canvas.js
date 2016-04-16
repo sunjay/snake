@@ -36,6 +36,23 @@ class Canvas {
     });
   }
 
+  drawText({text, x, y, maxWidth = undefined, fontSize = null, ...styles}) {
+    this._withStyles({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      fillStyle: 'black',
+      strokeStyle: 'white',
+      lineWidth: 2,
+      ...(fontSize ? {
+        font: fontSize ? `${fontSize}px sans-serif` : undefined,
+      } : {}),
+      ...styles,
+    }, (ctx) => {
+      ctx.strokeText(text, x, y, maxWidth);
+      ctx.fillText(text, x, y, maxWidth);
+    });
+  }
+
   _withStyles(styles, modifier) {
     const savedStyles = Object.keys(styles).reduce((saved, style) => ({
       ...saved,
