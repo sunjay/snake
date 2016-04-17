@@ -1,9 +1,9 @@
 const {ARROW_KEYS} = require('./keys');
 const {pressKey, enableAI, ACTION_ENABLE_AI} = require('./actions');
 
-const arrows = Array.from(ARROW_KEYS);
-
 const dispatch = postMessage;
+
+const arrows = Array.from(ARROW_KEYS);
 
 let enabled = false;
 

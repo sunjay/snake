@@ -1,8 +1,8 @@
 const Grid = require('./grid');
 const Game = require('./game');
 const Renderer = require('./renderer');
-const {KEYS} = require('./keys');
-const {resetGame, enableAI, ACTION_ENABLE_AI, ACTION_KEY} = require('./actions');
+const {resetGame, ACTION_ENABLE_AI, ACTION_KEY} = require('./actions');
+const {render: renderControls, setupEventListeners} = require('./controls');
 
 const {app} = require('../scss/index.scss');
 
@@ -10,17 +10,21 @@ const appContainer = document.getElementById('app');
 appContainer.classList.add(app);
 
 const container = document.getElementById('game-container');
-const snakeLength = document.getElementById('snake-length');
-const aiEnabled = document.getElementById('ai');
 
 const AIWorker = require('worker!./worker');
 
 const worker = new AIWorker();
 const dispatch = (...args) => worker.postMessage(...args);
 
-let game, renderer, useAI = false;
+let renderer;
+let store = {
+  game: null,
+  useAI: false,
+};
 reset();
 loop();
+
+setupEventListeners({store, dispatch, reset});
 
 function reset() {
   dispatch(resetGame());
@@ -30,7 +34,8 @@ function reset() {
   }
 
   const grid = new Grid({rows: 30, cols: 30});
-  game = new Game(grid);
+  const game = new Game(grid);
+  store.game = game;
 
   renderer = new Renderer({
     parent: container,
@@ -43,42 +48,20 @@ function reset() {
 function loop() {
   window.requestAnimationFrame(loop);
 
-  game.update();
+  store.game.update();
   renderer.render();
 
-  snakeLength.textContent = `Length: ${game.snakeSize}`;
-  aiEnabled.textContent = `${useAI ? 'on' : 'off'}`;
+  renderControls(store);
 }
 
 worker.addEventListener('message', ({data: {type, ...action}}) => {
   if (type === ACTION_KEY) {
-    game.handleKey(action.key);
+    store.game.handleKey(action.key);
   }
   else if (type === ACTION_ENABLE_AI) {
-    useAI = action.enabled;
+    // Only updates the useAI property on update from the worker
+    // This is so the property change is acknowledged
+    store.useAI = action.enabled;
   }
-});
-
-document.addEventListener('keydown', (event) => {
-    const key = event.width || event.keyCode;
-    if (key === KEYS.R) { // r
-      reset();
-      return;
-    }
-    else if (key === KEYS.A) { // a
-      dispatch(enableAI(!useAI));
-      return;
-    }
-    else if (!useAI) {
-      game.handleKey(key);
-    }
-});
-
-document.getElementById('reset').addEventListener('click', () => {
-  reset();
-});
-
-document.getElementById('toggle-ai').addEventListener('click', () => {
-  dispatch(enableAI(!useAI));
 });
 
