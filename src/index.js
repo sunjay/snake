@@ -2,6 +2,7 @@ const Grid = require('./grid');
 const Game = require('./game');
 const Renderer = require('./renderer');
 const {KEYS} = require('./keys');
+const {resetGame, ACTION_KEY} = require('./actions');
 
 const {app} = require('../scss/index.scss');
 
@@ -14,12 +15,15 @@ const snakeLength = document.getElementById('snake-length');
 const AIWorker = require('worker!./worker');
 
 const worker = new AIWorker();
+const dispatch = (...args) => worker.postMessage(...args);
 
 let game, renderer;
 reset();
 loop();
 
 function reset() {
+  dispatch(resetGame());
+
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
@@ -43,6 +47,12 @@ function loop() {
 
   snakeLength.textContent = `Length: ${game.snakeSize}`;
 }
+
+worker.addEventListener('message', ({data: {type, key}}) => {
+  if (type === ACTION_KEY) {
+    game.handleKey(key);
+  }
+});
 
 document.addEventListener('keydown', (event) => {
     const key = event.width || event.keyCode;
