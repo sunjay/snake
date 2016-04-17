@@ -4,13 +4,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: {
-    bundle: ['./src/index.js'],
-    worker: ['./src/worker.js'],
-  },
+  entry: ['./src/index.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: 'bundle.js',
     publicPath: '/',
   },
   module: {

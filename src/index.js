@@ -11,6 +11,10 @@ appContainer.classList.add(app);
 const container = document.getElementById('game-container');
 const snakeLength = document.getElementById('snake-length');
 
+const AIWorker = require('worker!./worker');
+
+const worker = new AIWorker();
+
 let game, renderer;
 reset();
 loop();
