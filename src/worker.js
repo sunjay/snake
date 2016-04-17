@@ -1,16 +1,23 @@
 const {ARROW_KEYS} = require('./keys');
-const {pressKey} = require('./actions');
+const {pressKey, enableAI, ACTION_ENABLE_AI} = require('./actions');
 
 const arrows = Array.from(ARROW_KEYS);
 
 const dispatch = postMessage;
 
-global.addEventListener('message', ({data}) => {
-  console.log(data);
+let enabled = false;
+
+global.addEventListener('message', ({data: {type, ...action}}) => {
+  if (type === ACTION_ENABLE_AI) {
+    enabled = action.enabled;
+    dispatch(enableAI(enabled));
+  }
 });
 
 setInterval(() => {
-  const key = arrows[Math.floor(arrows.length * Math.random())];
-  dispatch(pressKey(key));
+  if (enabled) {
+    const key = arrows[Math.floor(arrows.length * Math.random())];
+    dispatch(pressKey(key));
+  }
 }, 200);
 

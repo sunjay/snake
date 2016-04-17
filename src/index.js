@@ -2,7 +2,7 @@ const Grid = require('./grid');
 const Game = require('./game');
 const Renderer = require('./renderer');
 const {KEYS} = require('./keys');
-const {resetGame, ACTION_KEY} = require('./actions');
+const {resetGame, enableAI, ACTION_ENABLE_AI, ACTION_KEY} = require('./actions');
 
 const {app} = require('../scss/index.scss');
 
@@ -11,13 +11,14 @@ appContainer.classList.add(app);
 
 const container = document.getElementById('game-container');
 const snakeLength = document.getElementById('snake-length');
+const aiEnabled = document.getElementById('ai');
 
 const AIWorker = require('worker!./worker');
 
 const worker = new AIWorker();
 const dispatch = (...args) => worker.postMessage(...args);
 
-let game, renderer;
+let game, renderer, useAI = false;
 reset();
 loop();
 
@@ -46,11 +47,15 @@ function loop() {
   renderer.render();
 
   snakeLength.textContent = `Length: ${game.snakeSize}`;
+  aiEnabled.textContent = `${useAI ? 'on' : 'off'}`;
 }
 
-worker.addEventListener('message', ({data: {type, key}}) => {
+worker.addEventListener('message', ({data: {type, ...action}}) => {
   if (type === ACTION_KEY) {
-    game.handleKey(key);
+    game.handleKey(action.key);
+  }
+  else if (type === ACTION_ENABLE_AI) {
+    useAI = action.enabled;
   }
 });
 
@@ -60,10 +65,20 @@ document.addEventListener('keydown', (event) => {
       reset();
       return;
     }
-    game.handleKey(key);
+    else if (key === KEYS.A) { // a
+      dispatch(enableAI(!useAI));
+      return;
+    }
+    else if (!useAI) {
+      game.handleKey(key);
+    }
 });
 
 document.getElementById('reset').addEventListener('click', () => {
   reset();
+});
+
+document.getElementById('toggle-ai').addEventListener('click', () => {
+  dispatch(enableAI(!useAI));
 });
 

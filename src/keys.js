@@ -4,6 +4,7 @@ export const KEYS = {
   LEFT_ARROW: 37,
   DOWN_ARROW: 40,
   R: 82,
+  A: 65,
 };
 
 export const ARROW_KEYS = new Set(
