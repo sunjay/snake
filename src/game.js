@@ -19,6 +19,16 @@ class Game {
     return this.grid.snake.size;
   }
 
+  get snakeDirection() {
+    return this.grid.snake.direction;
+  }
+
+  setDirection(direction) {
+    if (this.grid.snake.canTravelInDirection(direction)) {
+      this.grid.snake.setDirection(direction);
+    }
+  }
+
   handleKey(key) {
     const isRunning = Game.isRunning(this.state);
     const isReady = Game.isReady(this.state);
@@ -46,8 +56,8 @@ class Game {
       direction = Direction.S;
     }
 
-    if (direction && this.grid.snake.canTravelInDirection(direction)) {
-      this.grid.snake.setDirection(direction);
+    if (direction) {
+      this.setDirection(direction);
     }
   }
 

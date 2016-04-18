@@ -1,7 +1,12 @@
 const Grid = require('./grid');
 const Game = require('./game');
 const Renderer = require('./renderer');
-const {resetGame, ACTION_ENABLE_AI, ACTION_KEY} = require('./actions');
+const {
+  resetGame,
+  snakeDirection,
+  ACTION_ENABLE_AI,
+  ACTION_KEY,
+} = require('./actions');
 const {render: renderControls, setupEventListeners} = require('./controls');
 
 const {app} = require('../scss/index.scss');
@@ -57,6 +62,7 @@ function loop() {
 worker.addEventListener('message', ({data: {type, ...action}}) => {
   if (type === ACTION_KEY) {
     store.game.handleKey(action.key);
+    dispatch(snakeDirection(store.game.snakeDirection));
   }
   else if (type === ACTION_ENABLE_AI) {
     // Only updates the useAI property on update from the worker
