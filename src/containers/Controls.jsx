@@ -4,8 +4,8 @@ const {enableAI, resetGame} = require('../actions/actions');
 
 const ControlsBar = require('../components/ControlsBar');
 
-const mapStateToProps = ({game: {snakeLength}, settings: {aiEnabled}}) => ({
-  snakeLength,
+const mapStateToProps = ({game: {snakeSize}, settings: {aiEnabled}}) => ({
+  snakeSize,
   aiEnabled,
 });
 
