@@ -5,6 +5,9 @@ const SettingsRecord = Record({
 });
 
 class Settings extends SettingsRecord {
+  setAI(enabled) {
+    return this.set('useAI', enabled);
+  }
 }
 
 module.exports = Settings;
