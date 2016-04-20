@@ -6,16 +6,16 @@ const BORDER_COLOR = '#444';
 export function renderGame(canvas, {game}) {
   canvas.clear();
 
-  const state = game.state;
+  const status = game.status;
   const width = canvas.width;
   const height = canvas.height;
 
   renderGrid(canvas, {game, width, height});
-  renderState(canvas, {state, width, height});
+  renderStatus(canvas, {status, width, height});
 }
 
-function renderState(canvas, {state, width, height}) {
-  if (state.isReady) {
+function renderStatus(canvas, {status, width, height}) {
+  if (status.isReady) {
     renderTitle(canvas, {
       title: 'Snake',
       subtitle: (
@@ -26,15 +26,15 @@ function renderState(canvas, {state, width, height}) {
       width, height,
     });
   }
-  else if (state.isLost) {
+  else if (status.isLost) {
     renderTitle(canvas, {
       title: 'You Lost',
-      subtitle: message + '\nPress r',
+      subtitle: status.message + '\nPress r',
       titleFillStyle: '#FF5454',
       width, height,
     });
   }
-  else if (state.isWon) {
+  else if (status.isWon) {
     renderTitle(canvas, {
       title: 'You Won!',
       subtitle: 'Press r',

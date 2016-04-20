@@ -78,11 +78,13 @@ class Snake extends SnakeRecord {
       return tmp;
     });
 
-    if (this.pendingGrowth) {
+    let pendingGrowth = this.pendingGrowth;
+    if (pendingGrowth) {
       body = body.push(nextPosition);
+      pendingGrowth--;
     }
 
-    return this.set('body', body);
+    return this.set('body', body).set('pendingGrowth', pendingGrowth);
   }
 }
 

@@ -2,7 +2,7 @@ const {Range, Record} = require('immutable');
 
 const Vector = require('./vector');
 
-const GameState = require('./gameState');
+const GameStatus = require('./gameStatus');
 const Snake = require('./snake');
 
 const EMPTY = 0;
@@ -14,7 +14,7 @@ const SnakeGameRecord = Record({
   cols: undefined,
   goal: undefined,
   snake: undefined,
-  state: new GameState(),
+  status: new GameStatus(),
 });
 
 class SnakeGame extends SnakeGameRecord {
@@ -38,6 +38,10 @@ class SnakeGame extends SnakeGameRecord {
 
   isGoal({x, y}) {
     return this.goal ? this.goal.equals(new Vector({x, y})) : false;
+  }
+
+  isOutOfBounds({x, y}) {
+    return x < 0 || y < 0 || x >= this.cols || y >= this.rows;
   }
 
   placeSnake({x, y}) {
