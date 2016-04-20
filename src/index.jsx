@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 const {Provider} = require('react-redux');
 const {applyMiddleware, createStore} = require('redux');
 const createLogger = require('redux-logger');
+var thunk = require('redux-thunk').default;
 
 const appReducer = require('./reducers/index');
 const App = require('./components/App');
@@ -11,7 +12,7 @@ const logger = createLogger();
 let store = createStore(
   appReducer,
   // logger must be last
-  applyMiddleware(logger)
+  applyMiddleware(thunk, logger)
 );
 
 ReactDOM.render(

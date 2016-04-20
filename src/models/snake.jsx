@@ -1,7 +1,6 @@
 const {Record, List} = require('immutable');
 
 const Vector = require('./vector');
-const Direction = require('./direction');
 
 // Body parts added for each food item
 const GROWTH_RATE = 5; // parts per goal
