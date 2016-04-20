@@ -4,7 +4,7 @@ const {Provider} = require('react-redux');
 const {applyMiddleware, createStore} = require('redux');
 const createLogger = require('redux-logger');
 
-const appReducer = require('./reducers');
+const appReducer = require('./reducers/index');
 const App = require('./components/App');
 
 const logger = createLogger();

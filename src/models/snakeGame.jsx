@@ -26,12 +26,12 @@ class SnakeGame extends SnakeGameRecord {
     return new SnakeGame({
       rows: rows,
       cols: cols,
-      tiles: Range(rows).map(() => (
-        Range(cols).map(EMPTY).toList()
+      tiles: Range(0, rows).map(() => (
+        Range(0, cols).map(() => EMPTY).toList()
       )).toList(),
     }).placeSnake({
-      x: Math.floor(this.cols / 2),
-      y: Math.floor(this.rows / 2),
+      x: Math.floor(cols / 2),
+      y: Math.floor(rows / 2),
     }).placeRandomGoal();
   }
 
@@ -66,7 +66,7 @@ class SnakeGame extends SnakeGameRecord {
 
   placeRandomGoal() {
     if (this.isFull) {
-      return this.update('goal', null);
+      return this.set('goal', null);
     }
 
     let goal;
@@ -77,7 +77,7 @@ class SnakeGame extends SnakeGameRecord {
       });
     } while (this.isSnake(goal));
 
-    return this.update('goal', goal);
+    return this.set('goal', goal);
   }
 }
 
