@@ -41,6 +41,10 @@ class SnakeGame extends SnakeGameRecord {
     return this.getTile({x, y}) === SNAKE;
   }
 
+  isGoal({x, y}) {
+    return this.goal ? this.goal.equals(new Vector({x, y})) : false;
+  }
+
   getTile({x, y}) {
     return this.tiles.get(this.tileIndexFromPosition({x, y}));
   }

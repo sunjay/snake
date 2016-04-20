@@ -11,6 +11,21 @@ const GameStateRecord = Record({
 });
 
 class GameState extends GameStateRecord {
+  get isReady() {
+    return this.state === READY;
+  }
+
+  get isRunning() {
+    return this.state === RUNNING;
+  }
+
+  get isWon() {
+    return this.state === WON;
+  }
+
+  get isLost() {
+    return this.state === LOST;
+  }
 }
 
 module.exports = GameState;
