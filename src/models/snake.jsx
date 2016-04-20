@@ -25,6 +25,9 @@ class Snake extends SnakeRecord {
   }
 
   setDirection(direction) {
+    if (!this.canTravelInDirection(direction)) {
+      return this;
+    }
     return this.set('direction', direction);
   }
 
@@ -47,6 +50,7 @@ class Snake extends SnakeRecord {
   }
 
   contains(vec) {
+    vec = new Vector(vec);
     return this.body.some((b) => b.equals(vec));
   }
 

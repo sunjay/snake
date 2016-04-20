@@ -11,8 +11,8 @@ export function pressKey(key) {
   return createAction(ACTION_KEY, {key});
 }
 
-export function snakeDirection(direction) {
-  return createAction(ACTION_DIRECTION, {direction});
+export function snakeDirection(directionName) {
+  return createAction(ACTION_DIRECTION, {name: directionName});
 }
 
 export function enableAI(enabled = true) {

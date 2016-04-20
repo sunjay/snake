@@ -1,4 +1,4 @@
-const {Range, Record} = require('immutable');
+const {Record} = require('immutable');
 
 const SettingsRecord = Record({
   useAI: false,

@@ -40,25 +40,6 @@ class SnakeGame extends SnakeGameRecord {
     return this.goal ? this.goal.equals(new Vector({x, y})) : false;
   }
 
-  isValidDirection(direction) {
-    // Only allow travel in a given direction
-    // if it would not directly collide with the
-    // segment just after the head
-    // In general, colliding with any other part is allowed
-    // This also allows the user to change their mind
-    // Example: if heading downwards after going left,
-    // the user could hit right and then left immediately
-    // That's okay with this method, since it doesn't use
-    // the current direction, but instead uses a possible
-    // collision to determine if the direction is okay
-    if (this.body.length < 2) {
-      return true;
-    }
-    // The vector from the second body part to the head
-    const delta = this.body[1].sub(this.head()).normalize();
-    return !delta.equals(direction);
-  }
-
   placeSnake({x, y}) {
     return this.set('snake', Snake.fromStartPosition({x, y}));
   }
