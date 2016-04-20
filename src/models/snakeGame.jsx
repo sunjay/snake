@@ -26,9 +26,7 @@ class SnakeGame extends SnakeGameRecord {
     return new SnakeGame({
       rows: rows,
       cols: cols,
-      tiles: Range(0, rows).map(() => (
-        Range(0, cols).map(() => EMPTY).toList()
-      )).toList(),
+      tiles: Range(0, rows * cols).map(() => EMPTY).toList(),
     }).placeSnake({
       x: Math.floor(cols / 2),
       y: Math.floor(rows / 2),
@@ -44,13 +42,23 @@ class SnakeGame extends SnakeGameRecord {
   }
 
   getTile({x, y}) {
-    return this.tiles.get(y).get(x);
+    return this.tiles.get(this.tileIndexFromPosition({x, y}));
   }
 
   setTile({x, y}, value) {
     return this.update('tiles', (tiles) => (
-      tiles.update(y, (row) => row.set(x, value))
+      tiles.set(this.tileIndexFromPosition({x, y}), value)
     ));
+  }
+
+  *getRows() {
+    return Range(0, this.rows).map((i) => (
+      this.tiles.slice(i * this.cols, (i + 1) * this.cols)
+    ));
+  }
+
+  tileIndexFromPosition({x, y}) {
+    return y * this.rows + x;
   }
 
   placeSnake({x, y}) {
