@@ -10,6 +10,10 @@ class Vector extends VectorRecord {
     return Math.sqrt(this.x ** 2 + this.y ** 2);
   }
 
+  equals({x, y}) {
+    return this.x === x && this.y === y;
+  }
+
   add({x, y}) {
     return new Vector({
       x: this.x + x,
