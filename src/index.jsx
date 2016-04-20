@@ -3,7 +3,8 @@ const ReactDOM = require('react-dom');
 const {Provider} = require('react-redux');
 const {applyMiddleware, createStore} = require('redux');
 const createLogger = require('redux-logger');
-var thunk = require('redux-thunk').default;
+const thunk = require('redux-thunk').default;
+const {start: startKeyboardService} = require('./services/keyboard');
 
 const appReducer = require('./reducers/index');
 const App = require('./components/App');
@@ -14,6 +15,8 @@ let store = createStore(
   // logger must be last
   applyMiddleware(thunk, logger)
 );
+
+startKeyboardService(store);
 
 ReactDOM.render(
   <Provider store={store}>
