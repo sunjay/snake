@@ -1,23 +1,19 @@
 const {Range, Record} = require('immutable');
 
-const Vector = require('../math/vector');
+const Vector = require('./vector');
 
 const GameState = require('./gameState');
+const Snake = require('./snake');
 
 const EMPTY = 0;
 const SNAKE = 1;
 const GOAL = 2;
 
-// Body parts added for each food item
-const GROWTH_RATE = 5; // parts per goal
-
 const SnakeGameRecord = Record({
   rows: undefined,
   cols: undefined,
-  tiles: undefined,
   goal: undefined,
-  snakeSize: 0,
-  remainingGrowth: 0,
+  snake: undefined,
   state: new GameState(),
 });
 
@@ -26,7 +22,6 @@ class SnakeGame extends SnakeGameRecord {
     return new SnakeGame({
       rows: rows,
       cols: cols,
-      tiles: Range(0, rows * cols).map(() => EMPTY).toList(),
     }).placeSnake({
       x: Math.floor(cols / 2),
       y: Math.floor(rows / 2),
@@ -34,46 +29,38 @@ class SnakeGame extends SnakeGameRecord {
   }
 
   get isFull() {
-    return this.snakeSize >= this.rows * this.cols;
+    return this.snake.length >= this.rows * this.cols;
   }
 
   isSnake({x, y}) {
-    return this.getTile({x, y}) === SNAKE;
+    return this.snake.contains({x, y});
   }
 
   isGoal({x, y}) {
     return this.goal ? this.goal.equals(new Vector({x, y})) : false;
   }
 
-  getTile({x, y}) {
-    return this.tiles.get(this.tileIndexFromPosition({x, y}));
-  }
-
-  setTile({x, y}, value) {
-    return this.update('tiles', (tiles) => (
-      tiles.set(this.tileIndexFromPosition({x, y}), value)
-    ));
-  }
-
-  *getRows() {
-    return Range(0, this.rows).map((i) => (
-      this.tiles.slice(i * this.cols, (i + 1) * this.cols)
-    ));
-  }
-
-  tileIndexFromPosition({x, y}) {
-    return y * this.rows + x;
+  isValidDirection(direction) {
+    // Only allow travel in a given direction
+    // if it would not directly collide with the
+    // segment just after the head
+    // In general, colliding with any other part is allowed
+    // This also allows the user to change their mind
+    // Example: if heading downwards after going left,
+    // the user could hit right and then left immediately
+    // That's okay with this method, since it doesn't use
+    // the current direction, but instead uses a possible
+    // collision to determine if the direction is okay
+    if (this.body.length < 2) {
+      return true;
+    }
+    // The vector from the second body part to the head
+    const delta = this.body[1].sub(this.head()).normalize();
+    return !delta.equals(direction);
   }
 
   placeSnake({x, y}) {
-    if (this.isSnake({x, y})) {
-      return this;
-    }
-
-    return this.withMutations((world) => {
-      world.update('snakeSize', (size) => size + 1);
-      world.setTile({x, y}, SNAKE);
-    });
+    return this.set('snake', Snake.fromStartPosition({x, y}));
   }
 
   placeRandomGoal() {

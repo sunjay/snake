@@ -1,18 +1,32 @@
+const {Record, List} = require('immutable');
+
 const Vector = require('./vector');
 const Direction = require('./direction');
 
-class Snake {
-  constructor({startX, startY}) {
-    this.body = [
-      // Head has to be first
-      new Vector({x: startX, y: startY}),
-    ];
-    this.afterTail = null;
-    this.direction = Direction.E;
+// Body parts added for each food item
+const GROWTH_RATE = 5; // parts per goal
+
+const SnakeRecord = Record({
+  body: [],
+  direction: undefined,
+  previousTail: null,
+  remainingGrowth: 0,
+});
+
+class Snake extends SnakeRecord {
+  static fromStartPosition({x, y}) {
+    return new Snake({
+      // First element is the head
+      body: List.of(new Vector({x, y})),
+    });
+  }
+
+  get length() {
+    return this.body.size;
   }
 
   setDirection(direction) {
-    this.direction = direction;
+    return this.set('direction', direction);
   }
 
   canTravelInDirection(direction) {
