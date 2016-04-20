@@ -13,6 +13,14 @@ const SnakeGrid = React.createClass({
     this.draw();
   },
 
+  shouldComponentUpdate(nextProps) {
+    // Trick to check if only the direction changed
+    // since update isn't necessary if that is the only change
+    return !nextProps.game.update('snake', (snake) => {
+      return snake.set('direction', this.props.game.snake.direction);
+    }).equals(this.props.game);
+  },
+
   componentDidUpdate() {
     this.draw();
   },
