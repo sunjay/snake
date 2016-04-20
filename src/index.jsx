@@ -4,18 +4,28 @@ const {Provider} = require('react-redux');
 const {applyMiddleware, createStore} = require('redux');
 const createLogger = require('redux-logger');
 const thunk = require('redux-thunk').default;
-const {start: startKeyboardService} = require('./services/keyboard');
+
+const {ACTION_UPDATE} = require('./actions/actions');
 
 const appReducer = require('./reducers/index');
 const App = require('./components/App');
 
-const logger = createLogger();
+const {start: startMainloop} = require('./services/mainloop');
+const {start: startKeyboardService} = require('./services/keyboard');
+
+const logger = createLogger({
+  predicate(getState, action) {
+    // Avoid logging too many things
+    return action.type !== ACTION_UPDATE;
+  },
+});
 let store = createStore(
   appReducer,
   // logger must be last
   applyMiddleware(thunk, logger)
 );
 
+startMainloop(store);
 startKeyboardService(store);
 
 ReactDOM.render(

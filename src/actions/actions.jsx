@@ -1,9 +1,14 @@
 export const ACTION_RESET = 'reset';
+export const ACTION_UPDATE = 'update';
 export const ACTION_DIRECTION = 'direction';
 export const ACTION_ENABLE_AI = 'ai-enabled';
 
 export function resetGame() {
   return createAction(ACTION_RESET);
+}
+
+export function updateGame() {
+  return createAction(ACTION_UPDATE);
 }
 
 export function snakeDirection(directionName) {
