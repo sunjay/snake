@@ -1,7 +1,7 @@
 const React = require('react');
 
 const ControlsBar = ({
-  aiEnabled,
+  useAI,
   snakeSize,
   onReset = () => {},
   onToggleAI = () => {},
@@ -10,9 +10,9 @@ const ControlsBar = ({
     <button onClick={onReset}>Reset</button> (Press <kbd>r</kbd>)
     &nbsp;
     &nbsp;
-    AI: {aiEnabled ? 'on' : 'off'}
+    AI: {useAI ? 'on' : 'off'}
     &nbsp;
-    <button onClick={() => onToggleAI(!aiEnabled)}>Toggle</button>
+    <button onClick={() => onToggleAI(!useAI)}>Toggle</button>
     &nbsp;
     (Press <kbd>a</kbd>)
     <div className='pull-right'>&emsp;Length: {snakeSize}</div>
@@ -22,7 +22,7 @@ const ControlsBar = ({
 );
 
 ControlsBar.propTypes = {
-  aiEnabled: React.PropTypes.bool.isRequired,
+  useAI: React.PropTypes.bool.isRequired,
   snakeSize: React.PropTypes.number.isRequired,
   onReset: React.PropTypes.func,
   onToggleAI: React.PropTypes.func,

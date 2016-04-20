@@ -1,7 +1,7 @@
 const {Range, Record} = require('immutable');
 
 const SettingsRecord = Record({
-  aiEnabled: false,
+  useAI: false,
 });
 
 class Settings extends SettingsRecord {
