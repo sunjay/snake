@@ -1,4 +1,4 @@
-const {ACTION_ENABLE_AI} = require('../actions/actions');
+const {ACTION_DIRECTION, ACTION_ENABLE_AI} = require('../actions/actions');
 
 export const start = ({dispatch}, worker) => {
   worker.addEventListener('message', ({data: action}) => {
@@ -9,8 +9,14 @@ export const start = ({dispatch}, worker) => {
 export function createWorkerMiddleware(worker) {
   const send = (...args) => worker.postMessage(...args);
 
-  return store => next => action => {
+  return ({getState}) => next => action => {
+    const useAI = getState().settings.useAI;
     if (action.source !== 'ai') {
+      // Ignore directions while AI is enabled
+      if (useAI && action.type === ACTION_DIRECTION) {
+        return;
+      }
+
       // Forward all actions to the AI so it can stay in sync
       send(action);
 
