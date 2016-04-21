@@ -61,6 +61,10 @@ class SnakeGame extends SnakeGameRecord {
       });
     } while (this.isSnake(goal));
 
+    return this.placeGoal(goal);
+  }
+
+  placeGoal(goal) {
     return this.set('goal', goal);
   }
 }
