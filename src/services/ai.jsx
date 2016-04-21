@@ -2,8 +2,6 @@ const {ACTION_ENABLE_AI} = require('../actions/actions');
 
 export const start = ({dispatch}, worker) => {
   worker.addEventListener('message', ({data: action}) => {
-    //TODO: delete this
-    console.log('response', action);
     dispatch(action);
   });
 };

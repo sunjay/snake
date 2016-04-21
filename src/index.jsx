@@ -26,7 +26,7 @@ const logger = createLogger({
 });
 const workerMiddleware = createWorkerMiddleware(worker);
 
-let store = createStore(
+const store = createStore(
   appReducer,
   // logger must be last
   applyMiddleware(
