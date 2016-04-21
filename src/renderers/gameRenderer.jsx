@@ -75,34 +75,32 @@ function renderTitle(canvas, {title, subtitle, titleFillStyle, width, height}) {
 }
 
 function renderGrid(canvas, {game, width, height}) {
-  const {rows, cols} = game;
+  const {rows, cols, snake, goal} = game;
   const tileWidth = width / cols;
   const tileHeight = height / rows;
 
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const rect = {
-        x: col * tileWidth,
-        y: row * tileHeight,
-        width: tileWidth,
-        height: tileHeight,
-        lineWidth: 0,
-      };
+  const rect = {
+    width: tileWidth,
+    height: tileHeight,
+    lineWidth: 0,
+  };
 
-      if (game.isSnake({x: col, y: row})) {
-        canvas.drawRect({
-          ...rect,
-          fillStyle: SNAKE_COLOR,
-        });
-      }
-      else if (game.isGoal({x: col, y: row})) {
-        canvas.drawRect({
-          ...rect,
-          fillStyle: GOAL_COLOR,
-        });
-      }
-    }
+  for (let {x, y} of snake.body) {
+    canvas.drawRect({
+      ...rect,
+      x: x * tileWidth,
+      y: y * tileHeight,
+      fillStyle: SNAKE_COLOR,
+    });
   }
+
+  const {x, y} = goal;
+  canvas.drawRect({
+    ...rect,
+    x: x * tileWidth,
+    y: y * tileHeight,
+    fillStyle: GOAL_COLOR,
+  });
 
   renderGridBackground(canvas, {rows, cols, width, height, tileWidth, tileHeight});
   renderBorder(canvas, {width, height});

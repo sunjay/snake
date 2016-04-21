@@ -6,7 +6,7 @@ const Vector = require('./vector');
 const GROWTH_RATE = 5; // parts per goal
 
 const SnakeRecord = Record({
-  body: [],
+  body: List.of(),
   direction: undefined,
   pendingGrowth: 0,
 });
