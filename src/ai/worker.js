@@ -24,8 +24,14 @@ self.addEventListener('message', ({data: action}) => {
   }
 });
 
+//TODO: Delete this Sample random AI
+const {NORTH, SOUTH, EAST, WEST} = require('../models/direction');
+const {snakeDirection} = require('../actions/actions');
 setInterval(() => {
   if (store.getState().settings.useAI) {
+    const directions = [NORTH, SOUTH, EAST, WEST];
+    const direction = directions[Math.floor(Math.random() * directions.length)];
+    send(snakeDirection(direction));
   }
 }, 200);
 
