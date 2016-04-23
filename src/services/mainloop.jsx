@@ -1,3 +1,5 @@
+const {updateGame} = require('../actions/actions');
+
 class FrameRate {
   constructor(fps) {
     this.fps = fps;
@@ -23,4 +25,18 @@ class FrameRate {
   }
 }
 
-module.exports = FrameRate;
+export const start = ({dispatch}) => {
+  const framerate = new FrameRate(15);
+
+  function loop() {
+    window.requestAnimationFrame(loop);
+
+    if (!framerate.shouldUpdate()) {
+      return;
+    }
+
+    dispatch(updateGame());
+  }
+  loop();
+};
+

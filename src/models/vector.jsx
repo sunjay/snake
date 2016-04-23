@@ -1,9 +1,11 @@
-class Vector {
-  constructor({x, y}) {
-    this.x = x;
-    this.y = y;
-  }
+const {Record} = require('immutable');
 
+const VectorRecord = Record({
+  x: undefined,
+  y: undefined,
+});
+
+class Vector extends VectorRecord {
   get length() {
     return Math.sqrt(this.x ** 2 + this.y ** 2);
   }
