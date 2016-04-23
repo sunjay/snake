@@ -11,8 +11,8 @@ const {
 
 const initialState = SnakeGame.fromDimensions({rows: 30, cols: 30});
 const game = createReducer(initialState, {
-  [ACTION_RESET]() {
-    return initialState.placeRandomGoal();
+  [ACTION_RESET](state, {seed}) {
+    return initialState.seed(seed).placeRandomGoal();
   },
   [ACTION_DIRECTION](state, {name}) {
     const direction = Direction.toDirection(name);

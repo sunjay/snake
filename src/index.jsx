@@ -5,7 +5,7 @@ const {applyMiddleware, createStore} = require('redux');
 const createLogger = require('redux-logger');
 const thunk = require('redux-thunk').default;
 
-const {ACTION_UPDATE} = require('./actions/actions');
+const {ACTION_UPDATE, resetGame} = require('./actions/actions');
 
 const appReducer = require('./reducers/index');
 const App = require('./components/App');
@@ -39,6 +39,8 @@ const store = createStore(
 startMainloop(store);
 startKeyboardService(store);
 startAI(store, worker);
+
+store.dispatch(resetGame());
 
 ReactDOM.render(
   <Provider store={store}>

@@ -4,7 +4,9 @@ export const ACTION_DIRECTION = 'direction';
 export const ACTION_ENABLE_AI = 'ai-enabled';
 
 export function resetGame() {
-  return createAction(ACTION_RESET);
+  return createAction(ACTION_RESET, {
+    seed: Math.floor(Math.random() * 100000),
+  });
 }
 
 export function updateGame() {

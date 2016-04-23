@@ -1,4 +1,5 @@
-const {Range, Record} = require('immutable');
+const {Record} = require('immutable');
+const Chance = require('chance');
 
 const Vector = require('./vector');
 
@@ -9,12 +10,16 @@ const EMPTY = 0;
 const SNAKE = 1;
 const GOAL = 2;
 
+// Not great makign this global...but it does work!
+let chance = null;
+
 const SnakeGameRecord = Record({
   rows: undefined,
   cols: undefined,
   goal: undefined,
   snake: undefined,
   status: new GameStatus(),
+  seed: undefined,
 });
 
 class SnakeGame extends SnakeGameRecord {
@@ -25,7 +30,7 @@ class SnakeGame extends SnakeGameRecord {
     }).placeSnake({
       x: Math.floor(cols / 2),
       y: Math.floor(rows / 2),
-    }).placeRandomGoal();
+    });
   }
 
   get isFull() {
@@ -48,7 +53,16 @@ class SnakeGame extends SnakeGameRecord {
     return this.set('snake', Snake.fromStartPosition({x, y}));
   }
 
+  seed(s) {
+    chance = new Chance(s);
+    return this;
+  }
+
   placeRandomGoal() {
+    if (!chance) {
+      throw new Error('Must seed() before placing a random number');
+    }
+
     if (this.isFull) {
       return this.set('goal', null);
     }
@@ -56,8 +70,8 @@ class SnakeGame extends SnakeGameRecord {
     let goal;
     do {
       goal = new Vector({
-        x: Math.floor(Math.random() * this.cols),
-        y: Math.floor(Math.random() * this.rows),
+        x: chance.integer({min: 0, max: this.cols - 1}),
+        y: chance.integer({min: 0, max: this.rows - 1}),
       });
     } while (this.isSnake(goal));
 

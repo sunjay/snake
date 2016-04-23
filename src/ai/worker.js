@@ -10,7 +10,6 @@ const send = (action) => postMessage({
   source: 'ai',
 });
 
-//TODO: Sync the goal position
 const store = createStore(
   appReducer,
   applyMiddleware(thunk)

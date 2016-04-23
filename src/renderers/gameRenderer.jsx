@@ -94,13 +94,15 @@ function renderGrid(canvas, {game, width, height}) {
     });
   }
 
-  const {x, y} = goal;
-  canvas.drawRect({
-    ...rect,
-    x: x * tileWidth,
-    y: y * tileHeight,
-    fillStyle: GOAL_COLOR,
-  });
+  if (goal) {
+    const {x, y} = goal;
+    canvas.drawRect({
+      ...rect,
+      x: x * tileWidth,
+      y: y * tileHeight,
+      fillStyle: GOAL_COLOR,
+    });
+  }
 
   renderGridBackground(canvas, {rows, cols, width, height, tileWidth, tileHeight});
   renderBorder(canvas, {width, height});
