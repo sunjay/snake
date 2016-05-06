@@ -10,7 +10,7 @@ const EMPTY = 0;
 const SNAKE = 1;
 const GOAL = 2;
 
-// Not great makign this global...but it does work!
+// Not great making this global...but it does work!
 let chance = null;
 
 const SnakeGameRecord = Record({
