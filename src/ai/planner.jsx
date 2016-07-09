@@ -70,13 +70,29 @@ function createAStarNode(game, parent, direction, finish) {
 
   const estimate = position.squaredDistanceTo(finish);
 
+  // Very basic heuristic for determining if this path will lead to a
+  // dead end. A more advanced method would be to look ahead from the
+  // finish and see if there are alternate paths afterwards
+  // The advanced method should lookahead at least the number of spaces
+  // the snake will grow to see if it hits something
+  let extra = 0;
+  if (position.equals(game.goal)) {
+    const afterGoal = position.add(game.snake.direction);
+    if (game.isSnake(afterGoal) || game.isOutOfBounds(afterGoal)) {
+      // this extra cost will influence the snake to avoid these conditions
+      // but also still not exhaust the search if this is the only option
+      // Needs to be at least the square of the distance from corner to corner
+      extra = 5000;
+    }
+  }
+
   return {
     id: position.hash(),
     game: game,
     // the direction leading to this game
     direction: direction,
     parent: parent,
-    cost: total + estimate,
+    cost: total + estimate + extra,
     // total distance up to this position from the start
     totalCost: total,
     estimatedCost: estimate,
