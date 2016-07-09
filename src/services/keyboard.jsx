@@ -1,4 +1,4 @@
-const {snakeDirection, resetGame, enableAI} = require('../actions/actions');
+const {snakeDirection, resetGame, enableAI, enableDebugAIPath} = require('../actions/actions');
 const {NORTH, SOUTH, EAST, WEST} = require('../models/direction');
 
 const KEYS = {
@@ -8,6 +8,7 @@ const KEYS = {
   DOWN_ARROW: 40,
   R: 82,
   A: 65,
+  PERIOD: 190,
 };
 
 //TODO: If AI is enabled start on any key that is not an existing action
@@ -20,6 +21,7 @@ const keyActions = {
   [KEYS.DOWN_ARROW]: () => snakeDirection(SOUTH),
   [KEYS.R]: () => resetGame(),
   [KEYS.A]: () => (dispatch, getState) => dispatch(enableAI(!getState().settings.useAI)),
+  [KEYS.PERIOD]: () => (dispatch, getState) => dispatch(enableDebugAIPath(!getState().settings.debugAIPath))
 };
 
 export const start = ({dispatch}) => {
