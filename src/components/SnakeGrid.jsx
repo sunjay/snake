@@ -2,11 +2,14 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 const Canvas = require('../renderers/canvas');
-const {renderGame} = require('../renderers/gameRenderer');
+const {renderGame, renderAI} = require('../renderers/gameRenderer');
 
 const SnakeGrid = React.createClass({
   propTypes: {
     game: React.PropTypes.object.isRequired,
+    pathPlan: React.PropTypes.object.isRequired,
+    useAI: React.PropTypes.bool.isRequired,
+    debugAIPath: React.PropTypes.bool.isRequired,
   },
 
   componentDidMount() {
@@ -36,7 +39,15 @@ const SnakeGrid = React.createClass({
 
   draw() {
     const canvas = new Canvas(ReactDOM.findDOMNode(this.refs.canvas));
+    canvas.clear();
+
     renderGame(canvas, {game: this.props.game});
+    renderAI(canvas, {
+      game: this.props.game,
+      useAI: this.props.useAI,
+      debugAIPath: this.props.debugAIPath,
+      pathPlan: this.props.pathPlan,
+    });
   },
 
   render() {

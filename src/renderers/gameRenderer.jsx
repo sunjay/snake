@@ -1,17 +1,107 @@
+const Direction = require('../models/direction');
+
 const SNAKE_COLOR = '#8AFFA5';
 const GRID_COLOR = '#DDD';
 const GOAL_COLOR = '#8AC2FF';
 const BORDER_COLOR = '#444';
+const PATH_COLOR = '#FFD000';
+const DEAD_END_COLOR = '#FF0000';
 
 export function renderGame(canvas, {game}) {
-  canvas.clear();
-
   const status = game.status;
   const width = canvas.width;
   const height = canvas.height;
 
   renderGrid(canvas, {game, width, height});
   renderStatus(canvas, {status, width, height});
+}
+
+export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
+  if (!useAI || !debugAIPath) {
+    return;
+  }
+
+  const snake = game.snake;
+  const head = snake.head();
+  const direction = snake.direction;
+  // direction is null at the start of the game
+  if (!direction) {
+    return;
+  }
+  const tileWidth = canvas.width / game.cols;
+  const tileHeight = canvas.height / game.rows;
+
+  if (pathPlan.hasPlan()) {
+    renderPlannedPath(canvas, {head, direction, pathPlan, tileWidth, tileHeight});
+  }
+  else {
+    renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight});
+  }
+}
+
+function renderPlannedPath(canvas, {head, direction, pathPlan, tileWidth, tileHeight}) {
+  let current = pathPlan.firstTurn();
+  pathPlan = pathPlan.shift();
+
+  while (true) {
+    const next = pathPlan.firstTurn();
+    if (!next) {
+      break;
+    }
+
+    canvas.drawLine({ 
+      x1: current.x * tileWidth + tileWidth / 2,
+      y1: current.y * tileHeight + tileHeight / 2,
+      x2: next.x * tileWidth + tileWidth / 2,
+      y2: next.y * tileHeight + tileHeight / 2,
+      lineWidth: 2,
+      strokeStyle: PATH_COLOR,
+    });
+
+    current = next;
+    pathPlan = pathPlan.shift();
+  }
+
+  const next = Direction.toDirection(current.direction).add(current);
+  canvas.drawLine({ 
+    x1: current.x * tileWidth + tileWidth / 2,
+    y1: current.y * tileHeight + tileHeight / 2,
+    x2: next.x * tileWidth + tileWidth / 2,
+    y2: next.y * tileHeight + tileHeight / 2,
+    lineWidth: 2,
+    strokeStyle: PATH_COLOR,
+  });
+}
+
+function renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight}) {
+  const next = head.add(direction);
+
+  canvas.drawLine({ 
+    x1: head.x * tileWidth + tileWidth / 2,
+    y1: head.y * tileHeight + tileHeight / 2,
+    x2: next.x * tileWidth + tileWidth / 2,
+    y2: next.y * tileHeight + tileHeight / 2,
+    lineWidth: 2,
+    strokeStyle: DEAD_END_COLOR,
+  });
+
+  // Draw an x through the next square
+  canvas.drawLine({ 
+    x1: next.x * tileWidth + tileWidth / 2 - tileWidth / 3,
+    y1: next.y * tileHeight + tileHeight / 2 - tileHeight / 3,
+    x2: next.x * tileWidth + tileWidth / 2 + tileWidth / 3,
+    y2: next.y * tileHeight + tileHeight / 2 + tileHeight / 3,
+    lineWidth: 2,
+    strokeStyle: DEAD_END_COLOR,
+  });
+  canvas.drawLine({ 
+    x1: next.x * tileWidth + tileWidth / 2 + tileWidth / 3,
+    y1: next.y * tileHeight + tileHeight / 2 - tileHeight / 3,
+    x2: next.x * tileWidth + tileWidth / 2 - tileWidth / 3,
+    y2: next.y * tileHeight + tileHeight / 2 + tileHeight / 3,
+    lineWidth: 2,
+    strokeStyle: DEAD_END_COLOR,
+  });
 }
 
 function renderStatus(canvas, {status, width, height}) {
