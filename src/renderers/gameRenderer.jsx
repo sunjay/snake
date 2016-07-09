@@ -22,6 +22,7 @@ export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
   }
 
   const snake = game.snake;
+  const goal = game.goal;
   const head = snake.head();
   const direction = snake.direction;
   // direction is null at the start of the game
@@ -32,14 +33,14 @@ export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
   const tileHeight = canvas.height / game.rows;
 
   if (pathPlan.hasPlan()) {
-    renderPlannedPath(canvas, {head, direction, pathPlan, tileWidth, tileHeight});
+    renderPlannedPath(canvas, {head, goal, direction, pathPlan, tileWidth, tileHeight});
   }
   else {
     renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight});
   }
 }
 
-function renderPlannedPath(canvas, {head, direction, pathPlan, tileWidth, tileHeight}) {
+function renderPlannedPath(canvas, {head, goal, direction, pathPlan, tileWidth, tileHeight}) {
   let current = head;
 
   while (true) {
@@ -61,12 +62,11 @@ function renderPlannedPath(canvas, {head, direction, pathPlan, tileWidth, tileHe
     pathPlan = pathPlan.shift();
   }
 
-  const next = Direction.toDirection(current.direction).add(current);
   canvas.drawLine({ 
     x1: current.x * tileWidth + tileWidth / 2,
     y1: current.y * tileHeight + tileHeight / 2,
-    x2: next.x * tileWidth + tileWidth / 2,
-    y2: next.y * tileHeight + tileHeight / 2,
+    x2: goal.x * tileWidth + tileWidth / 2,
+    y2: goal.y * tileHeight + tileHeight / 2,
     lineWidth: 2,
     strokeStyle: PATH_COLOR,
   });
