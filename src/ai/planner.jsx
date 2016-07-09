@@ -88,6 +88,7 @@ function createAStarNode(game, parent, direction, finish) {
  * that path
  */
 function solutionPathFromAStar(finishNode) {
+  //TODO: Some bug here causes finishNode.direction to be null sometimes
   let path = new PathPlan();
 
   // Note that the direction property is the direction leading
@@ -120,9 +121,9 @@ function solutionPathFromAStar(finishNode) {
 function insertAStarNodeByCost(open, node) {
   // attempt to insert the node before a node with a larger cost
   for (let [i, openNode] of open.entries()) {
-    // Since this is > and not >=, nodes with the same cost but checked later
-    // will be searched afterwards
-    if (openNode.cost > node.cost) {
+    // Since this is >= and not >, nodes with the same cost but
+    // checked earlier will be searched afterwards
+    if (openNode.cost >= node.cost) {
       open.splice(i, 0, node);
       return;
     }
