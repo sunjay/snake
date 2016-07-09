@@ -1,7 +1,7 @@
 {
-  "name": "my-fancy-project",
-  "version": "0.0.0",
-  "description": "<project description>",
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "Snake game with realtime AI",
   "main": "dist/index.js",
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --content-base dist/ --inline --hot",
@@ -11,10 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "<git repo>"
+    "url": "git+https://github.com/sunjay/snake.git"
   },
   "author": "Author Name <author@example.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sunjay/snake/issues"
+  },
+  "homepage": "https://github.com/sunjay/snake#readme",
   "devDependencies": {
     "autoprefixer": "^6.3.3",
     "babel-core": "^6.7.2",
