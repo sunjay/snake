@@ -40,8 +40,7 @@ export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
 }
 
 function renderPlannedPath(canvas, {head, direction, pathPlan, tileWidth, tileHeight}) {
-  let current = pathPlan.firstTurn();
-  pathPlan = pathPlan.shift();
+  let current = head;
 
   while (true) {
     const next = pathPlan.firstTurn();
