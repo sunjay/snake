@@ -9,11 +9,16 @@ export const start = ({dispatch}, worker) => {
 export function createWorkerMiddleware(worker) {
   const send = (...args) => worker.postMessage(...args);
 
-  return ({getState}) => next => action => {
-    const useAI = getState().settings.useAI;
+  return ({getState, dispatch}) => next => action => {
+    const state = getState();
+    const useAI = state.settings.useAI;
+    const isRunning = state.game.status.isRunning;
+
     if (action.source !== 'ai') {
       // Ignore directions while AI is enabled
-      if (useAI && action.type === ACTION_DIRECTION) {
+      // Only ignore keys so long as the game is already running
+      // This is so that the game can still be started while AI is on
+      if (useAI && action.type === ACTION_DIRECTION && isRunning) {
         return;
       }
 

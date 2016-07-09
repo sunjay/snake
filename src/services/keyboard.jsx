@@ -11,9 +11,6 @@ const KEYS = {
   PERIOD: 190,
 };
 
-//TODO: If AI is enabled start on any key that is not an existing action
-//TODO: Change the start message to Press any key to begin when AI enabled
-//TODO: Note: Direction actions are ignored in the ai service
 const keyActions = {
   [KEYS.UP_ARROW]: () => snakeDirection(NORTH),
   [KEYS.RIGHT_ARROW]: () => snakeDirection(EAST),
