@@ -6,7 +6,7 @@ const VectorRecord = Record({
 });
 
 class Vector extends VectorRecord {
-  get length() {
+  get magnitude() {
     return Math.sqrt(this.x ** 2 + this.y ** 2);
   }
 
@@ -40,7 +40,22 @@ class Vector extends VectorRecord {
   }
 
   normalize() {
-    return this.div(this.length);
+    return this.div(this.magnitude);
+  }
+
+  negate() {
+    return new Vector({
+      x: -this.x,
+      y: -this.y,
+    });
+  }
+
+  squaredDistanceTo({x, y}) {
+    return (this.x - x) ** 2 + (this.y - y) ** 2;
+  }
+
+  hash() {
+    return this.x + "," + this.y;
   }
 }
 

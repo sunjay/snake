@@ -12,12 +12,20 @@ const ALL = {
   [WEST]: new Vector({x: -1, y: 0}),
 };
 
+export function all() {
+  return names().map((n) => ALL[n]);
+}
+
+export function names() {
+  return Object.keys(ALL);
+}
+
 export function isOpposite(d1, d2) {
   return d1.dot(d2) < 0;
 }
 
 export function toName(direction) {
-  return Object.keys(ALL).find((name) => ALL[name].equals(direction));
+  return names().find((name) => ALL[name].equals(direction));
 }
 
 export function toDirection(name) {

@@ -42,6 +42,7 @@ self.addEventListener('message', ({data: action}) => {
     // Assumption: we will always hit the point in the plan
     // i.e. we can never accidentally skip an update and the AI will always
     // plan for squares we will actually hit
+    console.log('going in direction', game.snake.direction.x, game.snake.direction.y);
     sendDirectionUpdate(head, plan);
 
     //TODO: Right now this happens on every update, but in reality
@@ -62,8 +63,10 @@ function sendDirectionUpdate(head, plan) {
   }
 
   const {x, y, direction} = plan.firstTurn();
+  console.log('head', head.x, head.y, 'next', x, y, 'direction', direction.x, direction.y);
 
   if (head.equals({x, y})) {
+    console.log('turn', direction);
     // Note that store.dispatch isn't used here because we don't want to
     // change the direction on this side until it is acknowledged
     send(snakeDirection(direction));
