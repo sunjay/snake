@@ -8,6 +8,7 @@ const thunk = require('redux-thunk').default;
 const {
   ACTION_UPDATE,
   ACTION_UPDATE_PLANNED_PATH,
+  ACTION_SHIFT_PLANNED_PATH,
   resetGame,
 } = require('./actions/actions');
 
@@ -26,7 +27,8 @@ const logger = createLogger({
   predicate(getState, action) {
     // Avoid logging too many things
     return action.type !== ACTION_UPDATE
-      && action.type !== ACTION_UPDATE_PLANNED_PATH;
+      && action.type !== ACTION_UPDATE_PLANNED_PATH
+      && action.type !== ACTION_SHIFT_PLANNED_PATH;
   },
 });
 const workerMiddleware = createWorkerMiddleware(worker);
