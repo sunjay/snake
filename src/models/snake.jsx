@@ -16,6 +16,8 @@ class Snake extends SnakeRecord {
     return new Snake({
       // First element is the head
       body: List.of(new Vector({x, y})),
+      // Can be used to set the initial size of the snake
+      pendingGrowth: 0,
     });
   }
 

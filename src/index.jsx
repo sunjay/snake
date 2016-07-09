@@ -5,7 +5,11 @@ const {applyMiddleware, createStore} = require('redux');
 const createLogger = require('redux-logger');
 const thunk = require('redux-thunk').default;
 
-const {ACTION_UPDATE, resetGame} = require('./actions/actions');
+const {
+  ACTION_UPDATE,
+  ACTION_UPDATE_PLANNED_PATH,
+  resetGame,
+} = require('./actions/actions');
 
 const appReducer = require('./reducers/index');
 const App = require('./components/App');
@@ -21,7 +25,8 @@ const worker = new AIWorker();
 const logger = createLogger({
   predicate(getState, action) {
     // Avoid logging too many things
-    return action.type !== ACTION_UPDATE;
+    return action.type !== ACTION_UPDATE
+      && action.type !== ACTION_UPDATE_PLANNED_PATH;
   },
 });
 const workerMiddleware = createWorkerMiddleware(worker);

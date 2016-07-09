@@ -3,7 +3,16 @@ const thunk = require('redux-thunk').default;
 
 const appReducer = require('../reducers/index');
 
-const {ACTION_ENABLE_AI, enableAI} = require('../actions/actions');
+const {
+  ACTION_ENABLE_AI,
+  ACTION_UPDATE,
+  enableAI,
+  snakeDirection,
+  updatePlannedPath,
+  shiftPlannedPath,
+} = require('../actions/actions');
+
+const planner = require('./planner');
 
 const send = (action) => postMessage({
   ...action,
@@ -18,19 +27,63 @@ const store = createStore(
 self.addEventListener('message', ({data: action}) => {
   store.dispatch(action);
 
+  const state = store.getState();
+  const useAI = state.settings.useAI;
+  const plan = state.ai;
+  const game = state.game;
+  const isRunning = game.status.isRunning;
+  const head = game.snake.head();
+
   if (action.type === ACTION_ENABLE_AI) {
-    send(enableAI(store.getState().settings.useAI));
+    send(enableAI(useAI));
+  }
+
+  if (action.type === ACTION_UPDATE && isRunning && useAI) {
+    // Assumption: we will always hit the point in the plan
+    // i.e. we can never accidentally skip an update and the AI will always
+    // plan for squares we will actually hit
+    sendDirectionUpdate(head, plan);
+
+    //TODO: Right now this happens on every update, but in reality
+    // what should happen is that the AI should constantly be working
+    // to calculate the path only pausing to process messages and update
+    updateAIPath(game);
   }
 });
 
-//TODO: Delete this Sample random AI
-const {NORTH, SOUTH, EAST, WEST} = require('../models/direction');
-const {snakeDirection} = require('../actions/actions');
-setInterval(() => {
-  if (store.getState().settings.useAI) {
-    const directions = [NORTH, SOUTH, EAST, WEST];
-    const direction = directions[Math.floor(Math.random() * directions.length)];
-    send(snakeDirection(direction));
+/**
+ * If the snake is at the next point on the planned path,
+ * this will send a direction update for the next direction
+ * and then shift the planned path
+ */
+function sendDirectionUpdate(head, plan) {
+  if (!plan.hasPlan()) {
+    return;
   }
-}, 200);
+
+  const {x, y, direction} = plan.firstTurn();
+
+  if (head.equals({x, y})) {
+    // Note that store.dispatch isn't used here because we don't want to
+    // change the direction on this side until it is acknowledged
+    send(snakeDirection(direction));
+
+    // This needs to be updated on both ends and will not be acknowledged
+    store.dispatch(shiftPlannedPath());
+    send(shiftPlannedPath());
+  }
+}
+
+/**
+ * Updates the planned path if necessary and sends that update
+ */
+function updateAIPath(game) {
+  console.time('astar');
+  const path = planner.planPathAStar(game);
+  console.timeEnd('astar');
+
+  // This needs to be updated on both ends and will not be acknowledged
+  store.dispatch(updatePlannedPath(path));
+  send(updatePlannedPath(path));
+}
 
