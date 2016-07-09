@@ -82,7 +82,12 @@ function createAStarNode(game, parent, direction, finish) {
       // this extra cost will influence the snake to avoid these conditions
       // but also still not exhaust the search if this is the only option
       // Needs to be at least the square of the distance from corner to corner
-      extra = 5000;
+      extra += 5000;
+    }
+
+    const twoAfterGoal = afterGoal.add(game.snake.direction);
+    if (game.isSnake(twoAfterGoal) || game.isOutOfBounds(twoAfterGoal)) {
+      extra += 4000;
     }
   }
 
