@@ -5,7 +5,7 @@ const SnakeGrid = require('../components/SnakeGrid');
 const mapStateToProps = ({
   game,
   settings: {useAI, debugAIPath},
-  ai: pathPlan,
+  ai: {plan: pathPlan},
 }) => ({
   game,
   useAI,

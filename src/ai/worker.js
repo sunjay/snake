@@ -29,7 +29,8 @@ self.addEventListener('message', ({data: action}) => {
 
   const state = store.getState();
   const useAI = state.settings.useAI;
-  const plan = state.ai;
+  const plan = state.ai.plan;
+  const plannedTarget = state.ai.target;
   const game = state.game;
   const isRunning = game.status.isRunning;
   const head = game.snake.head();
@@ -47,7 +48,9 @@ self.addEventListener('message', ({data: action}) => {
     //TODO: Right now this happens on every update, but in reality
     // what should happen is that the AI should constantly be working
     // to calculate the path only pausing to process messages and update
-    updateAIPath(game);
+    if (!game.goal.equals(plannedTarget)) {
+      updateAIPath(game);
+    }
   }
 });
 
@@ -83,7 +86,7 @@ function updateAIPath(game) {
   console.timeEnd('astar');
 
   // This needs to be updated on both ends and will not be acknowledged
-  store.dispatch(updatePlannedPath(path.toJSON()));
-  send(updatePlannedPath(path.toJSON()));
+  store.dispatch(updatePlannedPath(path.toJSON(), game.goal.toJSON()));
+  send(updatePlannedPath(path.toJSON(), game.goal.toJSON()));
 }
 

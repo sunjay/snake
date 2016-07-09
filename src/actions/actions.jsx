@@ -28,8 +28,8 @@ export function enableDebugAIPath(enabled = true) {
   return createAction(ACTION_ENABLE_DEBUG_AI_PATH, {enabled});
 }
 
-export function updatePlannedPath(path) {
-  return createAction(ACTION_UPDATE_PLANNED_PATH, {path});
+export function updatePlannedPath(path, target) {
+  return createAction(ACTION_UPDATE_PLANNED_PATH, {path, target});
 }
 
 export function shiftPlannedPath() {
