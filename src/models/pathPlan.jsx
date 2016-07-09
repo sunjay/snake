@@ -16,6 +16,14 @@ const PathPlanRecord = Record({
 class PathPlan extends PathPlanRecord {
   static Turn = Turn;
 
+  static fromJSON(pathJSON) {
+    let plan = new PathPlan();
+    for (let {x, y, direction} of pathJSON.nextDirections) {
+      plan = plan.addTurn({x, y}, direction);
+    }
+    return plan;
+  }
+
   hasPlan() {
     return !this.nextDirections.isEmpty();
   }

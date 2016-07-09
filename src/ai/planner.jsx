@@ -1,4 +1,4 @@
-const direction = require('../models/direction');
+const Direction = require('../models/direction');
 const PathPlan = require('../models/pathPlan');
 
 /**
@@ -10,9 +10,7 @@ export function planPathAStar(game) {
   // Need to start on the position *after* the current one because
   // at this point the snake is already moving there, there is nothing
   // to be gained by searching other directions from the current position
-  console.log('before', game.snake.head(), game.snake.direction);
   game = game.update('snake', (snake) => snake.shift());
-  console.log('after', game.snake.head(), game.snake.direction);
 
   const finish = game.goal;
 
@@ -103,19 +101,18 @@ function solutionPathFromAStar(finishNode) {
     // started
     if (!current.direction.equals(currentDirection)) {
       const position = current.game.snake.head();
-      path = path.prependTurn(position, current.direction);
+      path = path.prependTurn(position, Direction.toName(currentDirection));
 
       currentDirection = current.direction;
     }
 
-    // once we reach the start node, we'll have a current position
-    // but no current direction - this needs to be prepended too
-    //TODO: Commented out because we are already moving in this direction
-    //const position = current.game.snake.head();
-    //path = path.prependTurn(position, current.direction);
-
     current = current.parent;
   }
+
+  // once we reach the start node, we'll have a current position
+  // but no current direction - this needs to be prepended too
+  const position = current.game.snake.head();
+  path = path.prependTurn(position, Direction.toName(currentDirection));
 
   return path;
 }
@@ -142,7 +139,7 @@ function* availableAdjacents(game) {
   const position = game.snake.head();
   const backwards = game.snake.direction.negate();
 
-  for (let direction of direction.all()) {
+  for (let direction of Direction.all()) {
     // Since it is impossible to move backwards
     if (direction.equals(backwards)) {
       continue;

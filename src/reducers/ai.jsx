@@ -14,7 +14,7 @@ const game = createReducer(initialState, {
     return initialState;
   },
   [ACTION_UPDATE_PLANNED_PATH](_, {path}) {
-    return path;
+    return PathPlan.fromJSON(path);
   },
   [ACTION_SHIFT_PLANNED_PATH](state) {
     return state.shift();
