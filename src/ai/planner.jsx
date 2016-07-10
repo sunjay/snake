@@ -62,10 +62,22 @@ export function planPathAStar(game) {
 function createAStarNode(game, parent, direction, finish) {
   const position = game.snake.head();
 
+  let extra = 0;
+
   let total = 0;
   if (parent) {
     const parentPosition = parent.game.snake.head();
     total = parent.totalCost + parentPosition.squaredDistanceTo(position);
+
+    // An additional extra heuristic to favor straighter paths
+    if (!game.snake.direction.equals(parent.game.snake.direction)) {
+      // This weight will be the minimum number of steps the snake
+      // will attempt to stay in a straight path for
+      // It is usually safe to set this at the width or height of the
+      // screen. Setting it too high (higher than other weights) will
+      // result in those considerations being placed at a lower priority
+      extra += 30;
+    }
   }
 
   const estimate = position.squaredDistanceTo(finish);
@@ -75,7 +87,6 @@ function createAStarNode(game, parent, direction, finish) {
   // finish and see if there are alternate paths afterwards
   // The advanced method should lookahead at least the number of spaces
   // the snake will grow to see if it hits something
-  let extra = 0;
   if (position.equals(game.goal)) {
     const afterGoal = position.add(game.snake.direction);
     if (game.isSnake(afterGoal) || game.isOutOfBounds(afterGoal)) {
