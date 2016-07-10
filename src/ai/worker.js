@@ -10,6 +10,7 @@ const {
   snakeDirection,
   updatePlannedPath,
   shiftPlannedPath,
+  clearPlannedPath,
 } = require('../actions/actions');
 
 const planner = require('./planner');
@@ -37,6 +38,9 @@ self.addEventListener('message', ({data: action}) => {
 
   if (action.type === ACTION_ENABLE_AI) {
     send(enableAI(useAI));
+
+    store.dispatch(clearPlannedPath());
+    send(clearPlannedPath());
   }
 
   if (action.type === ACTION_UPDATE && isRunning && useAI) {

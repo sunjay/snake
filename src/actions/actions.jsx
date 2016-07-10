@@ -5,6 +5,7 @@ export const ACTION_ENABLE_AI = 'ai-enabled';
 export const ACTION_ENABLE_DEBUG_AI_PATH = 'ai-path-debug-enabled';
 export const ACTION_UPDATE_PLANNED_PATH = 'update-planned-path';
 export const ACTION_SHIFT_PLANNED_PATH = 'shift-planned-path';
+export const ACTION_CLEAR_PLANNED_PATH = 'clear-planned-path';
 
 export function resetGame() {
   return createAction(ACTION_RESET, {
@@ -34,6 +35,10 @@ export function updatePlannedPath(path, target) {
 
 export function shiftPlannedPath() {
   return createAction(ACTION_SHIFT_PLANNED_PATH);
+}
+
+export function clearPlannedPath() {
+  return createAction(ACTION_CLEAR_PLANNED_PATH);
 }
 
 function createAction(type, payload = {}) {
