@@ -24,7 +24,8 @@ The **ai process** must send messages regarding the directions the snake
 on the main process should turn in order to survive and collect food. The
 main process keeps the AI up to date on when it updates and where the goal
 currently is. If the AI does not send its messages in time, the snake on
-the main process will likely die.
+the main process will likely die. The AI process does not have access to
+the new goal until the main process generates it.
 
 15 FPS is ~67 ms/frame. There is an additional latency to be accounted for
 between the processes. Removing that and also an additional margin of time
