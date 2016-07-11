@@ -10,8 +10,7 @@ const EMPTY = 0;
 const SNAKE = 1;
 const GOAL = 2;
 
-// Not great making this global...but it does work!
-let chance = null;
+const chance = new Chance();
 
 const SnakeGameRecord = Record({
   rows: undefined,
@@ -19,7 +18,6 @@ const SnakeGameRecord = Record({
   goal: undefined,
   snake: undefined,
   status: new GameStatus(),
-  seed: undefined,
 });
 
 class SnakeGame extends SnakeGameRecord {
@@ -53,16 +51,7 @@ class SnakeGame extends SnakeGameRecord {
     return this.set('snake', Snake.fromStartPosition({x, y}));
   }
 
-  seed(s) {
-    chance = new Chance(s);
-    return this;
-  }
-
   placeRandomGoal() {
-    if (!chance) {
-      throw new Error('Must seed() before placing a random number');
-    }
-
     if (this.isFull) {
       return this.set('goal', null);
     }

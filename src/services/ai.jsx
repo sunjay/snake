@@ -1,4 +1,9 @@
-const {ACTION_DIRECTION, ACTION_ENABLE_AI} = require('../actions/actions');
+const {
+  ACTION_DIRECTION,
+  ACTION_ENABLE_AI,
+  ACTION_UPDATE,
+  updateGame,
+} = require('../actions/actions');
 
 export const start = ({dispatch}, worker) => {
   worker.addEventListener('message', ({data: action}) => {
@@ -20,6 +25,20 @@ export function createWorkerMiddleware(worker) {
       // This is so that the game can still be started while AI is on
       if (useAI && action.type === ACTION_DIRECTION && isRunning) {
         return;
+      }
+
+      if (action.type == ACTION_UPDATE) {
+        // completely custom behaviour on update because we need to send
+        // an accurate goal every update
+        // That means the main process update needs to occur first
+        const result = next(action);
+
+        // Then the now up to date goal needs to be sent
+        const goal = getState().game.goal;
+        send(updateGame(goal ? goal.toJSON() : goal));
+
+        // Then the result needs to be returned as normal
+        return result;
       }
 
       // Forward all actions to the AI so it can stay in sync

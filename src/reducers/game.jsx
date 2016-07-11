@@ -1,5 +1,6 @@
 const {createReducer} = require('./reducer');
 
+const Vector = require('../models/vector');
 const Direction = require('../models/direction');
 const SnakeGame = require('../models/snakeGame');
 
@@ -11,8 +12,8 @@ const {
 
 const initialState = SnakeGame.fromDimensions({rows: 30, cols: 30});
 const game = createReducer(initialState, {
-  [ACTION_RESET](state, {seed}) {
-    return initialState.seed(seed).placeRandomGoal();
+  [ACTION_RESET](state) {
+    return initialState.placeRandomGoal();
   },
   [ACTION_DIRECTION](state, {name}) {
     const direction = Direction.toDirection(name);
@@ -25,7 +26,7 @@ const game = createReducer(initialState, {
         return status;
       });
   },
-  [ACTION_UPDATE](state) {
+  [ACTION_UPDATE](state, {goal = {}}) {
     if (state.status.isRunning) {
       if (state.isGoal(state.snake.head())) {
         state = state
@@ -34,6 +35,12 @@ const game = createReducer(initialState, {
       }
       state = state.update('snake', (snake) => snake.shift());
     }
+
+    // since null is a valid goal value, goal is only not set if an empty object is provided
+    if (!goal || Object.keys(goal).length > 0) {
+      state = state.set('goal', new Vector(goal));
+    }
+
     return state.update('status', (status) => {
       if (state.snake.isWithinSelf()) {
         return status.setLost('bumped into yourself');
