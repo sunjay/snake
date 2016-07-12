@@ -89,7 +89,7 @@ function createAStarNode(game, parent, direction, finish) {
   // the snake will grow to see if it hits something
   if (position.equals(game.goal)) {
     const afterGoal = position.add(game.snake.direction);
-    if (game.isSnake(afterGoal) || game.isOutOfBounds(afterGoal)) {
+    if (!game.isTraversable(afterGoal)) {
       // this extra cost will influence the snake to avoid these conditions
       // but also still not exhaust the search if this is the only option
       // Needs to be at least the square of the distance from corner to corner
@@ -97,7 +97,7 @@ function createAStarNode(game, parent, direction, finish) {
     }
 
     const twoAfterGoal = afterGoal.add(game.snake.direction);
-    if (game.isSnake(twoAfterGoal) || game.isOutOfBounds(twoAfterGoal)) {
+    if (!game.isTraversable(afterGoal)) {
       extra += 4000;
     }
   }
@@ -180,7 +180,7 @@ function* availableAdjacents(game) {
 
     const adjacent = position.add(direction);
 
-    if (game.isOutOfBounds(adjacent) || game.isSnake(adjacent)) {
+    if (!game.isTraversable(adjacent)) {
       continue;
     }
 

@@ -35,6 +35,15 @@ class SnakeGame extends SnakeGameRecord {
     return this.snake.length >= this.rows * this.cols;
   }
 
+  /**
+   * Returns if the given tile can be *safely* moved into by the snake
+   * This means that there is no other part of the snake on this tile
+   * and that the position is not out of bounds
+   */
+  isTraversable({x, y}) {
+    return !this.isOutOfBounds({x, y}) && !this.isSnake({x, y});
+  }
+
   isSnake({x, y}) {
     return this.snake.contains({x, y});
   }
