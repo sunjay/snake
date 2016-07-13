@@ -28,12 +28,12 @@ const game = createReducer(initialState, {
   },
   [ACTION_UPDATE](state, {goal = {}}) {
     if (state.status.isRunning) {
+      state = state.update('snake', (snake) => snake.shift());
       if (state.isGoal(state.snake.head())) {
         state = state
           .update('snake', (snake) => snake.grow())
           .placeRandomGoal();
       }
-      state = state.update('snake', (snake) => snake.shift());
     }
 
     // since null is a valid goal value, goal is only not set if an empty object is provided
