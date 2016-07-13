@@ -1,5 +1,6 @@
 const {applyMiddleware, createStore} = require('redux');
 const thunk = require('redux-thunk').default;
+const debounce = require('lodash.debounce');
 
 const appReducer = require('../reducers/index');
 
@@ -25,37 +26,64 @@ const store = createStore(
   applyMiddleware(thunk)
 );
 
-self.addEventListener('message', ({data: action}) => {
-  store.dispatch(action);
+const actionQueue = [];
 
-  const state = store.getState();
-  const useAI = state.settings.useAI;
-  const plan = state.ai.plan;
-  const plannedTarget = state.ai.target;
-  const game = state.game;
-  const isRunning = game.status.isRunning;
-  const head = game.snake.head();
+const flushActions = debounce(() => {
+  console.log('flushing', actionQueue.length, 'actions');
 
-  if (action.type === ACTION_ENABLE_AI) {
-    send(enableAI(useAI));
+  for (let [i, action] of actionQueue.entries()) {
+    store.dispatch(action);
 
-    store.dispatch(clearPlannedPath());
-    send(clearPlannedPath());
-  }
+    const state = store.getState();
+    const useAI = state.settings.useAI;
 
-  if (action.type === ACTION_UPDATE && isRunning && useAI) {
-    // Assumption: we will always hit the point in the plan
-    // i.e. we can never accidentally skip an update and the AI will always
-    // plan for squares we will actually hit
-    sendDirectionUpdate(head, plan);
+    // Enable AI needs to be acknowledged
+    if (action.type === ACTION_ENABLE_AI) {
+      send(enableAI(useAI));
 
-    //TODO: Right now this happens on every update, but in reality
-    // what should happen is that the AI should constantly be working
-    // to calculate the path only pausing to process messages and update
-    if (!game.goal.equals(plannedTarget)) {
-      updateAIPath(game);
+      store.dispatch(clearPlannedPath());
+      send(clearPlannedPath());
+    }
+
+    const plan = state.ai.plan;
+    const plannedTarget = state.ai.target;
+    const game = state.game;
+    const isRunning = game.status.isRunning;
+    const head = game.snake.head();
+
+    if (action.type === ACTION_UPDATE && isRunning && useAI) {
+      if (i !== actionQueue.length - 1) {
+        // If we got to a goal or if we clearly missed a target turn,
+        // the entire path needs to be replanned
+        if (!game.goal.equals(plannedTarget) || head.equals(plan.firstTurn())) {
+          console.log('replanning path');
+          store.dispatch(clearPlannedPath());
+          send(clearPlannedPath());
+        }
+      }
+      // reached last action
+      else {
+        // No longer assuming that we always hit the planned path
+        // Any latency is accounted for by clearing the path on multiple
+        // updates
+        sendDirectionUpdate(head, plan);
+
+        //TODO: Right now this happens on every update, but in reality
+        // what should happen is that the AI should constantly be working
+        // to calculate the path only pausing to process messages and update
+        if (!game.goal.equals(plannedTarget)) {
+          updateAIPath(game);
+        }
+      }
     }
   }
+
+  actionQueue.splice(0, actionQueue.length);
+}, 5);
+
+self.addEventListener('message', ({data: action}) => {
+  actionQueue.push(action);
+  flushActions();
 });
 
 /**

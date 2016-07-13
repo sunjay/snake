@@ -28,6 +28,11 @@ export function createWorkerMiddleware(worker) {
       }
 
       if (action.type == ACTION_UPDATE) {
+        // no point in sending continous updates for no reason
+        if (!isRunning) {
+          return;
+        }
+
         // completely custom behaviour on update because we need to send
         // an accurate goal every update
         // That means the main process update needs to occur first
