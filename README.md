@@ -6,7 +6,8 @@ middle of the game as well. It is designed to be able to reason about the
 best thing to do in any situation. Sometimes the best it can do is die.
 
 **DEMO:** http://sunjay.github.io/snake/
-**SEE DEVELOPMENT PROGRESS:** https://github.com/sunjay/snake/issues
+
+**Progress & Bugs:** https://github.com/sunjay/snake/issues
 
 On a more technical level, this AI is capable of dynamically
 finding the path that the snake should take to get to the goal
