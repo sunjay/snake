@@ -168,17 +168,19 @@ function renderGrid(canvas, {game, width, height}) {
   const tileWidth = width / cols;
   const tileHeight = height / rows;
 
-  const rect = {
-    width: tileWidth,
-    height: tileHeight,
-    lineWidth: 0,
-  };
+  for (let {front, back} of snake.body) {
+    const {x: f_x, y: f_y} = front;
+    const {x: b_x, y: b_y} = back;
 
-  for (let {x, y} of snake.body) {
+    const x = Math.min(f_x, b_x) * tileWidth;
+    const y = Math.min(f_y, b_y) * tileHeight;
+
+    const width = (Math.abs(front.x - back.x) + 1) * tileWidth;
+    const height = (Math.abs(front.y - back.y) + 1) * tileHeight;
+
     canvas.drawRect({
-      ...rect,
-      x: x * tileWidth,
-      y: y * tileHeight,
+      x, y, width, height,
+      lineWidth: 0,
       fillStyle: SNAKE_COLOR,
     });
   }
@@ -186,9 +188,11 @@ function renderGrid(canvas, {game, width, height}) {
   if (goal) {
     const {x, y} = goal;
     canvas.drawRect({
-      ...rect,
       x: x * tileWidth,
       y: y * tileHeight,
+      width: tileWidth,
+      height: tileHeight,
+      lineWidth: 0,
       fillStyle: GOAL_COLOR,
     });
   }
