@@ -55,7 +55,7 @@ class Snake extends SnakeRecord {
       // First element is the head
       body: List.of(Line.fromPoint({x, y})),
       // Can be used to set the initial size of the snake
-      pendingGrowth: 100,
+      pendingGrowth: 0,
     });
   }
 
