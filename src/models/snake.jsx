@@ -41,6 +41,10 @@ class Line extends LineRecord {
       x >= Math.min(f_x, b_x) && x <= Math.max(f_x, b_x)
     );
   }
+
+  hash() {
+    return this.front.hash() + '|' + this.back.hash();
+  }
 }
 
 const SnakeRecord = Record({
@@ -151,6 +155,10 @@ class Snake extends SnakeRecord {
     }
 
     return this.set('body', body).set('pendingGrowth', pendingGrowth);
+  }
+
+  hash() {
+    return this.body.map((L) => L.hash()).join(';');
   }
 }
 
