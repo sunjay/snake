@@ -170,7 +170,7 @@ function insertAStarNodeByCost(open, node) {
  */
 function* availableAdjacents(game) {
   const position = game.snake.head();
-  const backwards = game.snake.direction.reverse();
+  const backwards = game.snake.direction.negate();
 
   for (let direction of Direction.all()) {
     // Since it is impossible to move backwards

@@ -43,7 +43,7 @@ class Vector extends VectorRecord {
     return this.div(this.magnitude);
   }
 
-  reverse() {
+  negate() {
     return new Vector({
       x: -this.x,
       y: -this.y,

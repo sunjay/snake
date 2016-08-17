@@ -93,7 +93,7 @@ class Snake extends SnakeRecord {
       delta = this.body.get(1).front.sub(frontLine.front).normalize();
     }
     else {
-      delta = frontLine.direction.reverse();
+      delta = frontLine.direction.negate();
     }
 
     return !delta.equals(direction);
