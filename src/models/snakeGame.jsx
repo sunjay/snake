@@ -79,10 +79,6 @@ class SnakeGame extends SnakeGameRecord {
   placeGoal(goal) {
     return this.set('goal', goal);
   }
-
-  hash() {
-    return this.snake.hash() + '>' + (this.goal ? this.goal.hash() : 'none');
-  }
 }
 
 module.exports = SnakeGame;

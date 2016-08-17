@@ -15,12 +15,11 @@ export function planPathAStar(game) {
   const finish = game.goal;
 
   const open = [createAStarNode(game, null, null, finish)];
-  // seen situations
-  const situations = new Set();
+  const visited = new Set();
 
   while (open.length) {
     const current = open.splice(0, 1)[0];
-    situations.add(current.id);
+    visited.add(current.id);
 
     const position = current.game.snake.head();
 
@@ -29,15 +28,15 @@ export function planPathAStar(game) {
     }
 
     for (let {adjacent, direction} of availableAdjacents(current.game)) {
+      if (visited.has(adjacent.hash())) {
+        continue;
+      }
+
       // Change directions AND shift so that the snake moves in this
       // direction
       const adjGame = current.game.update('snake',
         (snake) => snake.setDirection(direction).shift());
       const adjNode = createAStarNode(adjGame, current, direction, finish);
-
-      if (situations.has(adjNode.id)) {
-        continue;
-      }
 
       // Skip a potential node with a lower cost
       var sameOpen = open.findIndex((n) => n.id === adjNode.id);
@@ -104,7 +103,7 @@ function createAStarNode(game, parent, direction, finish) {
   }
 
   return {
-    id: game.hash(),
+    id: position.hash(),
     game: game,
     // the direction leading to this game
     direction: direction,
