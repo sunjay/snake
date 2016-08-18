@@ -34,6 +34,7 @@ class Space extends SpaceRecord {
   /**
    * Return a resized space that avoids the given point
    * The returned space is guarenteed to not contain the given point
+   * Returns null if resizing resulted in none of this space being leftover
    * 
    * Assumes the given point is within this space
    */
@@ -122,6 +123,7 @@ class TraversableSpace extends TraversableSpaceRecord {
     // remove the space entirely
     let spaces;
     if (resizedSpace === null) {
+      //TODO: resize the adjacents of the original space to fill in any leftover traversable space from before this was removed
       spaces = this.spaces.remove(spaceIndex);
     }
     else {
