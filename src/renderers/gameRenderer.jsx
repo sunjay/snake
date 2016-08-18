@@ -111,16 +111,32 @@ function renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight}) {
 function renderTraversableSpace(canvas, {traversableSpace, tileWidth, tileHeight}) {
   const offset = {x: tileWidth / 2, y: tileHeight / 2};
   for (let rect of traversableSpace.spaces) {
-    const {x, y} = rect.topLeft.add(offset);
-    const width = rect.width * tileWidth;
-    const height = rect.height * tileHeight;
+    let {x, y} = rect.topLeft.add(offset);
+    let width = (rect.width - 1) * tileWidth;
+    let height = (rect.height - 1) * tileHeight;
 
-    canvas.drawRect({
-      x, y, width, height,
-      lineWidth: 2,
-      strokeStyle: TRAVERSABLE_SPACE_COLOR,
-      fillStyle: null,
-    });
+    // need a special way to render when rect.width === 1 and rect.height === 1
+    if (width === 0 && height === 0) {
+      x -= tileWidth / 4;
+      y -= tileHeight / 4;
+      width = tileWidth / 2;
+      height = tileHeight / 2;
+
+      canvas.drawRect({
+        x, y, width, height,
+        lineWidth: 2,
+        strokeStyle: null,
+        fillStyle: TRAVERSABLE_SPACE_COLOR,
+      });
+    }
+    else {
+      canvas.drawRect({
+        x, y, width, height,
+        lineWidth: 2,
+        strokeStyle: TRAVERSABLE_SPACE_COLOR,
+        fillStyle: null,
+      });
+    }
   }
 }
 
