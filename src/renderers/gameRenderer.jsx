@@ -18,10 +18,6 @@ export function renderGame(canvas, {game}) {
 }
 
 export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
-  if (!useAI || !debugAIPath) {
-    return;
-  }
-
   const {snake, traversableSpace, goal} = game;
 
   const head = snake.head();
@@ -30,9 +26,17 @@ export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
   const tileWidth = canvas.width / game.cols;
   const tileHeight = canvas.height / game.rows;
 
+  if (!debugAIPath) {
+    return;
+  }
+
   // Need to render traversable space first so that the planned path
   // is rendered on top
   renderTraversableSpace(canvas, {traversableSpace, tileWidth, tileHeight});
+
+  if (!useAI) {
+    return;
+  }
 
   // direction is null at the start of the game
   if (direction) {
