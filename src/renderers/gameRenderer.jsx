@@ -6,6 +6,7 @@ const GOAL_COLOR = '#8AC2FF';
 const BORDER_COLOR = '#444';
 const PATH_COLOR = '#FFD000';
 const DEAD_END_COLOR = '#FF0000';
+const TRAVERSABLE_SPACE_COLOR = '#0000FF'
 
 export function renderGame(canvas, {game}) {
   const status = game.status;
@@ -21,22 +22,26 @@ export function renderAI(canvas, {game, useAI, debugAIPath, pathPlan}) {
     return;
   }
 
-  const snake = game.snake;
-  const goal = game.goal;
+  const {snake, traversableSpace, goal} = game;
+
   const head = snake.head();
   const direction = snake.direction;
-  // direction is null at the start of the game
-  if (!direction) {
-    return;
-  }
+
   const tileWidth = canvas.width / game.cols;
   const tileHeight = canvas.height / game.rows;
 
-  if (pathPlan.hasPlan()) {
-    renderPlannedPath(canvas, {head, goal, direction, pathPlan, tileWidth, tileHeight});
-  }
-  else {
-    renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight});
+  // Need to render traversable space first so that the planned path
+  // is rendered on top
+  renderTraversableSpace(canvas, {traversableSpace, tileWidth, tileHeight});
+
+  // direction is null at the start of the game
+  if (direction) {
+    if (pathPlan.hasPlan()) {
+      renderPlannedPath(canvas, {head, goal, direction, pathPlan, tileWidth, tileHeight});
+    }
+    else {
+      renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight});
+    }
   }
 }
 
@@ -101,6 +106,22 @@ function renderDeadEnd(canvas, {head, direction, tileWidth, tileHeight}) {
     lineWidth: 2,
     strokeStyle: DEAD_END_COLOR,
   });
+}
+
+function renderTraversableSpace(canvas, {traversableSpace, tileWidth, tileHeight}) {
+  const offset = {x: tileWidth / 2, y: tileHeight / 2};
+  for (let rect of traversableSpace.spaces) {
+    const {x, y} = rect.topLeft.add(offset);
+    const width = rect.width * tileWidth;
+    const height = rect.height * tileHeight;
+
+    canvas.drawRect({
+      x, y, width, height,
+      lineWidth: 2,
+      strokeStyle: TRAVERSABLE_SPACE_COLOR,
+      fillStyle: null,
+    });
+  }
 }
 
 function renderStatus(canvas, {status, width, height}) {

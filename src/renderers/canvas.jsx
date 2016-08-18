@@ -23,7 +23,12 @@ class Canvas {
 
   drawRect({x, y, width, height, ...styles}) {
     this._withStyles(styles, (ctx) => {
-      ctx.fillRect(x, y, width, height);
+      if (styles.fillStyle) {
+        ctx.fillRect(x, y, width, height);
+      }
+      if (styles.strokeStyle) {
+        ctx.strokeRect(x, y, width, height);
+      }
     });
   }
 

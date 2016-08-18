@@ -60,7 +60,13 @@ class SnakeGame extends SnakeGameRecord {
   }
 
   placeSnake({x, y}) {
-    return this.set('snake', Snake.fromStartPosition({x, y}));
+    return this.withMutations((game) => {
+      game.set('snake', Snake.fromStartPosition({x, y}));
+      game.set('traversableSpace', TraversableSpace.fromDimensions({
+        rows: game.rows,
+        cols: game.cols,
+      }).fill({x, y}));
+    });
   }
 
   placeRandomGoal() {

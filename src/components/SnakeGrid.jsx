@@ -19,10 +19,16 @@ const SnakeGrid = React.createClass({
   shouldComponentUpdate(nextProps) {
     const nextDirection = nextProps.game.snake.direction;
     const direction = this.props.game.snake.direction;
+
     // This is cheaper than the method below
     // because we don't need to check if anything other than the
     // direction changed if the direction didn't in fact change
-    if (!nextDirection || !direction || nextDirection.equals(direction)) {
+    if (!nextDirection ||
+      !direction ||
+      nextDirection.equals(direction) ||
+      this.props.debugAIPath !== nextProps.debugAIPath ||
+      this.props.useAI !== nextProps.useAI
+    ) {
       return true;
     }
 
