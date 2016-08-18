@@ -28,7 +28,7 @@ const game = createReducer(initialState, {
   },
   [ACTION_UPDATE](state, {goal = {}}) {
     if (state.status.isRunning) {
-      state = state.update('snake', (snake) => snake.shift());
+      state = state.shift();
       if (state.isGoal(state.snake.head())) {
         state = state
           .update('snake', (snake) => snake.grow())

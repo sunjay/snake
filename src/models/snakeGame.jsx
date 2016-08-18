@@ -4,6 +4,7 @@ const Chance = require('chance');
 const Vector = require('./vector');
 
 const GameStatus = require('./gameStatus');
+const TraversableSpace = require('./traversableSpace');
 const Snake = require('./snake');
 
 const EMPTY = 0;
@@ -17,6 +18,7 @@ const SnakeGameRecord = Record({
   cols: undefined,
   goal: undefined,
   snake: undefined,
+  traversableSpace: undefined,
   status: new GameStatus(),
 });
 
@@ -25,6 +27,7 @@ class SnakeGame extends SnakeGameRecord {
     return new SnakeGame({
       rows: rows,
       cols: cols,
+      traversableSpace: TraversableSpace.fromDimensions({rows, cols}),
     }).placeSnake({
       x: Math.floor(cols / 2),
       y: Math.floor(rows / 2),
@@ -78,6 +81,27 @@ class SnakeGame extends SnakeGameRecord {
 
   placeGoal(goal) {
     return this.set('goal', goal);
+  }
+
+  shift() {
+    // Need to store this because the tail often moves out of this position
+    // and needs to be unfilled
+    const tail = this.snake.tail();
+
+    return this.withMutations((game) => {
+      game.update('snake', (snake) => snake.shift());
+
+      game.update('traversableSpace', (space) => {
+        return space.withMutations((space) => {
+          space.fill(game.snake.head());
+
+          // Need to check this because the tail doesn't always shift
+          if (!tail.equals(game.snake.tail())) {
+            space.unfill(tail);
+          }
+        });
+      });
+    });
   }
 }
 
