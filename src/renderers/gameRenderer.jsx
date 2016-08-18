@@ -113,7 +113,6 @@ function renderTraversableSpace(canvas, {traversableSpace, tileWidth, tileHeight
   for (let rect of traversableSpace.spaces) {
     const {width, height} = rect;
     const {x, y} = rect.topLeft;
-    console.log(x, y, width, height);
 
     // need a special way to render when rect.width === 1 and rect.height === 1
     if (width === 1 && height === 1) {

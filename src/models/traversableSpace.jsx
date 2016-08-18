@@ -52,7 +52,6 @@ class Space extends SpaceRecord {
       [-topLeftOffset.y + 1, this.moveTopEdge],
       [-bottomRightOffset.x - 1, this.moveBottomEdge],
     ).minBy((x) => Math.abs(x[0]));
-    console.log(move.name, amount);
 
     const space = move.call(this, amount);
     if (space.area === 0) {
