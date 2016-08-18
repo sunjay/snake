@@ -38,7 +38,43 @@ class Space extends SpaceRecord {
    * Assumes the given point is within this space
    */
   avoid({x, y}) {
-    return null;
+    // This calculates the offset between each edge and the point
+    const topLeftOffset = this.topLeft.sub({x, y});
+    const bottomRightOffset = this.bottomRight.sub({x, y});
+
+    // Calcualte the minimum movement by calculating the amount
+    // that each edge would be moved
+    const [amount, move] = List.of(
+      // The sign of the offset is opposite the amount we want to move
+      // The +1 makes sure we actually avoid the point
+      [-topLeftOffset.x + 1, this.moveLeftEdge],
+      [-bottomRightOffset.x - 1, this.moveRightEdge],
+      [-topLeftOffset.y + 1, this.moveTopEdge],
+      [-bottomRightOffset.x - 1, this.moveBottomEdge],
+    ).minBy((x) => Math.abs(x[0]));
+    console.log(move.name, amount);
+
+    const space = move.call(this, amount);
+    if (space.area === 0) {
+      return null;
+    }
+    return space;
+  }
+
+  moveLeftEdge(amount) {
+    return this.update('topLeft', (v) => v.update('x', (x) => x + amount));
+  }
+
+  moveRightEdge(amount) {
+    return this.update('bottomRight', (v) => v.update('x', (x) => x + amount));
+  }
+
+  moveTopEdge(amount) {
+    return this.update('topLeft', (v) => v.update('y', (y) => y + amount));
+  }
+
+  moveBottomEdge(amount) {
+    return this.update('bottomRight', (v) => v.update('y', (y) => y + amount));
   }
 }
 
