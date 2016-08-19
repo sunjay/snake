@@ -32,10 +32,84 @@ class Space extends SpaceRecord {
   }
 
   /**
+   * Returns the distance BETWEEN the edges of this space and another
+   * Assumes that other is on only ONE side of this
+   * i.e. other isn't far above AND to the right of this, it is one or
+   * the other
+   * Assumes that spaces never intersect (they don't)
+   *
+   * Example:
+   *   A           AA     C      CCD
+   *      BB     BB       DD
+   *   A is on multiple sides of B, C is only on one side of D
+   */
+  distanceBetween(other) {
+    // Note: This could potentially be done without all the cases:
+    // Just compute all the differences and find the one that isn't negative
+
+    // this is to the left of other
+    if (this.bottomRight.x < other.topLeft.x) {
+      return other.topLeft.x - this.bottomRight.x;
+    }
+    // this is above other
+    else if (this.bottomRight.y < other.topLeft.y) {
+      return other.topLeft.y - this.bottomRight.y;
+    }
+    // this is to the right of other
+    else if (this.topLeft.x > other.bottomRight.x) {
+      return this.topLeft.x - other.bottomRight.x;
+    }
+    // this is below other
+    else if (this.topLeft.y > other.bottomRight.y) {
+      return this.topLeft.y - other.bottomRight.y;
+    }
+    else {
+      throw new Error('unsupported case for distanceBetween');
+    }
+  }
+
+  /**
+   * Returns true if the given other space is within either
+   * dimension of this space geometrically
+   * That is, this function returns whether shifting other either
+   * only vertically or only horizontally could result in it moving
+   * into the area of this space
+   */
+  dimensionsContain(other) {
+    return (
+      other.topLeft.x >= this.topLeft.x && other.bottomRight.x <= this.bottomRight.x
+    ) || (
+      other.topLeft.y >= this.topLeft.y && other.bottomRight.y <= this.bottomRight.y
+    );
+  }
+
+  /**
+   * Returns a space that represents the difference in area on the grid
+   * between this space and another. other is assumed to be within
+   * this and the difference must be representable by a single space
+   *  ------- ----------   C = A + B
+   * |       |          |
+   * |   A   |    B     |
+   * |       |          |
+   *  ------- ----------
+   * 
+   * C is the shape surrounding A and B.
+   * The difference between C and A is B. (C - A = B)
+   * This function will return B given C (this) and A (other).
+   * 
+   * Intended for use right after avoid(), if other is null, returns this
+   */
+  difference(other) {
+    if (other === null) {
+      return this;
+    }
+  }
+
+  /**
    * Return a resized space that avoids the given point
    * The returned space is guarenteed to not contain the given point
    * Returns null if resizing resulted in none of this space being leftover
-   * 
+   *
    * Assumes the given point is within this space
    */
   avoid({x, y}) {
@@ -117,31 +191,42 @@ class TraversableSpace extends TraversableSpaceRecord {
 
     // No matter where the given point is, we can resize
     // the containing space to fit it
+    // If the space only had area 1 to begin with, resizing it will simply
+    // remove the space entirely (i.e. return null)
     const resizedSpace = space.avoid({x, y});
 
-    // If the space only had area 1 to begin with, resizing it will simply
-    // remove the space entirely
+    // Adjacents can only be resized if they can be contained in
+    // either the vertical or horizontal dimension of the *original*
+    // space. i.e. spaces with mismatched dimensions cannot be used
+    // here
+    // Need to use the *original* space since these adjacents may not be
+    // contained in the resized version
+    const adjacents = [];
+    const unchanged = [];
+    for (let adj of space.adjacents) {
+      const distance = resizedSpace.distanceBetween(adj);
+
+      if (distance >= 0) {
+        if (!space.dimensionsContain(adj)) {
+          unchanged.push(adj);
+          continue;
+        }
+      }
+
+      adjacents.push(adj);
+    }
+
+    // TODO: add new adjacents as necessary to fill in any leftovers
+
     let spaces;
     if (resizedSpace === null) {
-      //TODO: resize the adjacents of the original space to fill in any leftover traversable space from before this was removed
       spaces = this.spaces.remove(spaceIndex);
     }
     else {
-      const adjacents = [];
-
-      // TODO: resize the adjacents to fill in the extra traversable space
-      // Adjacents can only be resized if they can be contained in
-      // either the vertical or horizontal dimension of the *original*
-      // space. i.e. spaces with mismatched dimensions cannot be used
-      // here
-      // Need to use the *original* space since these adjacents may not be
-      // contained in the resized version
-
-      // TODO: add new adjacents as necessary to fill in any leftovers
-
       spaces = this.spaces.set(spaceIndex,
         resizedSpace.set('adjacents', List.of(...adjacents)));
     }
+
     return this.set('spaces', spaces);;
   }
 
