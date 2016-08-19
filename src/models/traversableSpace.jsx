@@ -103,6 +103,48 @@ class Space extends SpaceRecord {
     if (other === null) {
       return this;
     }
+
+    // when other is on the left side of this
+    else if (other.bottomRight.x < this.bottomRight.x) {
+      // return the right side
+      return new Space({
+        topLeft: new Vector({x: other.bottomRight.x, y: other.topLeft.y}),
+        bottomRight: this.bottomRight,
+      });
+    }
+
+    // when other is on the right side of this
+    else if (other.topLeft.x > this.topLeft.x) {
+      // return the left side
+      return new Space({
+        topLeft: this.topLeft,
+        bottomRight: new Vector({x: other.topLeft.x, y: other.bottomRight.y}),
+      });
+    }
+
+    // when other is at the top of this
+    else if (other.bottomRight.y < this.bottomRight.y) {
+      // return the bottom side
+      return new Space({
+        topLeft: new Vector({x: other.topLeft.x, y: other.bottomRight.y}),
+        bottomRight: this.bottomRight,
+      });
+    }
+
+    // when other is at the bottom of this
+    else if (other.topLeft.y > this.topLeft.y) {
+      // return the top side
+      return new Space({
+        topLeft: this.topLeft,
+        bottomRight: new Vector({x: other.bottomRight.x, y: other.topLeft.y}),
+      });
+    }
+
+    else {
+      // note that the case when both spaces are the same area is not
+      // supported
+      throw new Error('Unsupported case of difference');
+    }
   }
 
   /**
@@ -194,6 +236,15 @@ class TraversableSpace extends TraversableSpaceRecord {
     // If the space only had area 1 to begin with, resizing it will simply
     // remove the space entirely (i.e. return null)
     const resizedSpace = space.avoid({x, y});
+
+    // Need to resize adjacents into this difference or create
+    // new spaces that occupy this difference
+    const difference = space.difference(resizedSpace);
+
+    // The newly filled point is beside resizedSpace, so we can go around
+    // it in 4 directions and create up to 3 subspaces within the difference
+    // These subspaces give us the targets we need to occupy with the
+    // existing adjacents or new spaces
 
     // Adjacents can only be resized if they can be contained in
     // either the vertical or horizontal dimension of the *original*
