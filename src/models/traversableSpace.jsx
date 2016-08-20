@@ -1,6 +1,7 @@
 const {Record, List} = require('immutable');
 
 const Vector = require('./vector');
+const Direction = require('./direction');
 
 const SpaceRecord = Record({
   topLeft: undefined,
@@ -10,6 +11,10 @@ const SpaceRecord = Record({
 });
 
 class Space extends SpaceRecord {
+  static fromCorners(a, b) {
+    const [min, max] = (b.x > a.x && b.y > a.y) ? [a, b] : [b, a];
+  }
+
   get width() {
     // need to add 1 because coordinate system starts at 0
     return this.bottomRight.x - this.topLeft.x + 1;
@@ -22,6 +27,15 @@ class Space extends SpaceRecord {
 
   get area() {
     return this.width * this.height;
+  }
+
+  verticies() {
+    return List.of(
+      this.topLeft,
+      new Vector({x: this.bottomRight.x, y: this.topLeft.y}),
+      this.bottomRight,
+      new Vector({x: this.topLeft.x, y: this.bottomRight.y}),
+    );
   }
 
   contains({x, y}) {
@@ -104,11 +118,13 @@ class Space extends SpaceRecord {
       return this;
     }
 
+    // The +1/-1 throughout this code is there to avoid overlap
+
     // when other is on the left side of this
     else if (other.bottomRight.x < this.bottomRight.x) {
       // return the right side
       return new Space({
-        topLeft: new Vector({x: other.bottomRight.x, y: other.topLeft.y}),
+        topLeft: new Vector({x: other.bottomRight.x + 1, y: other.topLeft.y}),
         bottomRight: this.bottomRight,
       });
     }
@@ -118,7 +134,7 @@ class Space extends SpaceRecord {
       // return the left side
       return new Space({
         topLeft: this.topLeft,
-        bottomRight: new Vector({x: other.topLeft.x, y: other.bottomRight.y}),
+        bottomRight: new Vector({x: other.topLeft.x - 1, y: other.bottomRight.y}),
       });
     }
 
@@ -126,7 +142,7 @@ class Space extends SpaceRecord {
     else if (other.bottomRight.y < this.bottomRight.y) {
       // return the bottom side
       return new Space({
-        topLeft: new Vector({x: other.topLeft.x, y: other.bottomRight.y}),
+        topLeft: new Vector({x: other.topLeft.x, y: other.bottomRight.y + 1}),
         bottomRight: this.bottomRight,
       });
     }
@@ -136,7 +152,7 @@ class Space extends SpaceRecord {
       // return the top side
       return new Space({
         topLeft: this.topLeft,
-        bottomRight: new Vector({x: other.bottomRight.x, y: other.topLeft.y}),
+        bottomRight: new Vector({x: other.bottomRight.x, y: other.topLeft.y - 1}),
       });
     }
 
@@ -245,6 +261,15 @@ class TraversableSpace extends TraversableSpaceRecord {
     // it in 4 directions and create up to 3 subspaces within the difference
     // These subspaces give us the targets we need to occupy with the
     // existing adjacents or new spaces
+    const vertices = difference.verticies();
+    const subspaces = [];
+    for (let direction of Direction.all()) {
+      const corner = direction.add({x, y});
+      if (resizedSpace.contains(corner)) {
+        continue;
+      }
+      const possible = vertices.map((v) => null /*TODO*/);
+    }
 
     // Adjacents can only be resized if they can be contained in
     // either the vertical or horizontal dimension of the *original*
@@ -262,12 +287,16 @@ class TraversableSpace extends TraversableSpaceRecord {
           unchanged.push(adj);
           continue;
         }
+
+        //TODO
       }
 
       adjacents.push(adj);
     }
 
     // TODO: add new adjacents as necessary to fill in any leftovers
+    const added = [];
+    added.push(difference);
 
     let spaces;
     if (resizedSpace === null) {
@@ -278,7 +307,7 @@ class TraversableSpace extends TraversableSpaceRecord {
         resizedSpace.set('adjacents', List.of(...adjacents)));
     }
 
-    return this.set('spaces', spaces);;
+    return this.set('spaces', spaces.concat(added));;
   }
 
   /**
