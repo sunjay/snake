@@ -45,3 +45,10 @@ p {
   margin-top: 0.5em;
 }
 
+:local(.footer) {
+  font-size: small;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  text-align: center;
+}
+
