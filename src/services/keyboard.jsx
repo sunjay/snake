@@ -28,6 +28,7 @@ export const start = ({dispatch}) => {
     const action = getAction && getAction();
     if (action) {
       dispatch(action);
+      event.preventDefault();
     }
   });
 };
